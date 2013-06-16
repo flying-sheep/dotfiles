@@ -1,0 +1,3 @@
+[submodule "xcompose"]
+	path = xcompose
+	url = https://github.com/kragen/xcompose.git
