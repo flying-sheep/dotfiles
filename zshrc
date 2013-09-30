@@ -7,6 +7,7 @@ export EDITOR=vim
 export LESS='-R'
 export LESSOPEN="| $HOME/.dotfiles/autopygmentize %s"
 
+
 export ZSH=$HOME/.oh-my-zsh
 export ZSH_THEME="" #we use powerline
 
@@ -21,8 +22,6 @@ source "$ZSH/oh-my-zsh.sh"
 source /usr/share/zsh/site-contrib/powerline.zsh #echo -e "\ue0a0\ue0a1\ue0a2\ue0b0\ue0b1\ue0b2"
 export VIRTUAL_ENV_DISABLE_PROMPT=true
 
-source /usr/share/doc/pkgfile/command-not-found.zsh
-
 #aliases
 alias sudo="sudo " #completion
 alias svim="sudo vim" #yes, *that* lazy
@@ -30,6 +29,9 @@ alias sensible-browser="firefox" #for jist
 alias jist="jist -p" #public gists by default
 alias addon-sdk="cd /opt/addon-sdk && source bin/activate; cd -"
 alias pcat="$HOME/.dotfiles/autopygmentize"
+
+#command not found
+. /etc/profile.d/cnf.sh
 
 #fancy console blurring
 source "$HOME/.dotfiles/blur_console.sh"
