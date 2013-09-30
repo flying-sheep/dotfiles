@@ -7,9 +7,9 @@ export EDITOR=vim
 export LESS='-R'
 export LESSOPEN="| $HOME/.dotfiles/autopygmentize %s"
 
-
-export ZSH=$HOME/.oh-my-zsh
-export ZSH_THEME="" #we use powerline
+ZSH=/usr/share/oh-my-zsh/
+ZSH_THEME='' #we use powerline
+DISABLE_AUTO_UPDATE=true
 
 #gui exports, too (executed also by startkde when symlinked to ~/.kde4/env/*.sh)
 source "$HOME/.dotfiles/env.sh"
