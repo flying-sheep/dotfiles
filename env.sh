@@ -3,7 +3,7 @@
 xset b off #no annoying bell
 
 export SSH_ASKPASS='/usr/bin/ksshaskpass'
-ssh-add </dev/null
+ssh-add </dev/null 2>/dev/null
 
 #custom XCompose
 export GTK_IM_MODULE=xim
