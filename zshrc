@@ -1,6 +1,6 @@
 #terminal-only exports
 export PATH=/home/phil/bin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/usr/bin/vendor_perl
-export PYTHONPATH="/home/phil/Scripts/lib"
+export PYTHONPATH="/home/phil/Scripts/lib:/home/phil/Dev/Python"
 export NODE_PATH="/usr/lib/node_modules:$NODE_PATH"
 
 export EDITOR=vim
@@ -25,10 +25,13 @@ export VIRTUAL_ENV_DISABLE_PROMPT=true
 #aliases
 alias sudo="sudo " #completion
 alias svim="sudo vim" #yes, *that* lazy
-alias sensible-browser="firefox" #for jist
-alias jist="jist -p" #public gists by default
 alias addon-sdk="cd /opt/addon-sdk && source bin/activate; cd -"
 alias pcat="$HOME/.dotfiles/autopygmentize"
+alias ls="ls -CF --color=auto --group-directories-first"
+unalias ll
+ll() {
+	ls -lhF --color=always --group-directories-first "$@" | sed 's/->/→/'
+}
 
 #command not found
 . /etc/profile.d/cnf.sh
