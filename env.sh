@@ -2,8 +2,10 @@
 
 xset b off #no annoying bell
 
+if [[ -z $SSH_AGENT_PID ]]; then
+	eval "$(ssh-agent -s)"
+fi
 export SSH_ASKPASS='/usr/bin/ksshaskpass'
-ssh-add </dev/null 2>/dev/null
 
 #custom XCompose
 export GTK_IM_MODULE=xim
@@ -15,11 +17,11 @@ export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=on \
                       -Djayatana.force=true"
 
 #context minimals
-export OSFONTDIR="/usr/share/fonts:$HOME/.fonts"
-#source /opt/context-minimals/setuptex
+_setuptex=/opt/context-minimals/setuptex
+test -f $_setuptex && source $_setuptex
 
 #some AUR packages
 export LOCAL_PACKAGE_SOURCES="$HOME/Downloads/"
 
 #VSYNC
-export __GL_YIELD='USLEEP'
+#export __GL_YIELD='USLEEP'
