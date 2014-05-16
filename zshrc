@@ -23,6 +23,7 @@ source /usr/share/zsh/site-contrib/powerline.zsh #echo -e "\ue0a0\ue0a1\ue0a2\ue
 export VIRTUAL_ENV_DISABLE_PROMPT=true
 
 #aliases
+alias rm="rm -v"
 alias sudo="sudo " #completion
 alias svim="sudo vim" #yes, *that* lazy
 alias addon-sdk="cd /opt/addon-sdk && source bin/activate; cd -"
