@@ -75,7 +75,7 @@ if [[ -n "$lexer" ]]; then
         application/x-xz)    concat=xzcat;;
     esac
     # FIXME: Specify input encoding rather than output encoding https://bitbucket.org/birkenfeld/pygments-main/issue/800
-    exec $concat "$file" | pygmentize -f terminal256 -O style=native,encoding=$encoding,outencoding=UTF-8 $options -l $lexer
+    exec $concat "$file" | pygmentize -O style=native,encoding=$encoding,outencoding=UTF-8 $options -l $lexer # -f terminal256
 fi
 
 exit 1
