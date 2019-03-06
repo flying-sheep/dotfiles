@@ -1,6 +1,8 @@
 # if prezto isn’t globally installed
 test -z "$ZPREZTODIR" && source "$HOME/.zprezto/init.zsh"
 
+test -f "$HOME/.zshrc_local" && source "$HOME/.zshrc_local"
+
 # aliases
 eval $(thefuck --alias)
 alias cat=bat
