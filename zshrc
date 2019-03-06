@@ -1,41 +1,33 @@
-#terminal-only exports
-export PATH=/home/phil/bin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/usr/bin/vendor_perl
-export PYTHONPATH="/home/phil/Scripts/lib:/home/phil/Dev/Python"
-export NODE_PATH="/usr/lib/node_modules:$NODE_PATH"
+# if prezto isn’t globally installed
+test -z "$ZPREZTODIR" && source "$HOME/.zprezto/init.zsh"
 
-export EDITOR=vim
-export LESS='-R'
-export LESSOPEN="| $HOME/.dotfiles/autopygmentize %s"
+# aliases
+eval $(thefuck --alias)
+alias cat=bat
+alias less=bat
+alias ls=exa
+alias ll='exa -l --header --git --time-style=long-iso'
+alias tree='exa --tree'
 
-ZSH=/usr/share/oh-my-zsh/
-ZSH_THEME='' #we use powerline
-DISABLE_AUTO_UPDATE=true
-
-#gui exports, too (executed also by startkde when symlinked to ~/.kde4/env/*.sh)
-source "$HOME/.dotfiles/env.sh"
-
-#oh my zsh
-plugins=(git svn dbus npm showoff)
-source "$ZSH/oh-my-zsh.sh"
-
-#powerline
-source /usr/share/zsh/site-contrib/powerline.zsh #echo -e "\ue0a0\ue0a1\ue0a2\ue0b0\ue0b1\ue0b2"
-export VIRTUAL_ENV_DISABLE_PROMPT=true
-
-#aliases
-alias rm="rm -v"
-alias sudo="sudo " #completion
-alias svim="sudo vim" #yes, *that* lazy
-alias addon-sdk="cd /opt/addon-sdk && source bin/activate; cd -"
-alias pcat="$HOME/.dotfiles/autopygmentize"
-alias ls="ls -CF --color=auto --group-directories-first"
-unalias ll
-ll() {
-	ls -lhF --color=always --group-directories-first "$@" | sed 's/->/→/'
+R() {
+    if (( $# > 0 )); then
+        /usr/bin/R "$@"
+    else
+        jupyter console --kernel=ir
+    fi
 }
 
-#command not found
-. /etc/profile.d/cnf.sh
+# notify on long running commands
+if [[ -f /usr/share/undistract-me/long-running.bash ]]; then
+	source /usr/share/undistract-me/long-running.bash
+	notify_when_long_running_commands_finish_install
+fi
 
-#fancy console blurring
-source "$HOME/.dotfiles/blur_console.sh"
+# command not found
+test -f /usr/share/doc/pkgfile/command-not-found.zsh && source /usr/share/doc/pkgfile/command-not-found.zsh
+
+# fancy console blurring
+source "$HOME/.config/dotfiles/blur_console.sh"
+
+# Add identity
+ssh-add </dev/null 2>/dev/null

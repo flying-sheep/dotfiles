@@ -2,26 +2,26 @@
 	user = flying-sheep
 	name = Phil Schaf
 	email = flying-sheep@web.de
-[core]
-	editor = vim
-[color]
-	branch = auto
-	status = auto
-	diff = auto
-	ui = auto
+
 [push]
-	default = tracking
+	default = simple
 [pull]
 	rebase = true
+[rebase]
+   autoStash = true
+
 [merge]
 	tool = kdiff3
 [diff]
 	tool = kompare
+	colorMoved = default
 [difftool]
 	prompt = off
+
 [alias]
-	post-review = !post-review --guess-summary --guess-description --username=phils --password="$(ksshaskpass reviewboard)" --parent=master --tracking-branch=origin/master
 	branch-empty = !git symbolic-ref HEAD refs/heads/$1 && rm .git/index && git clean -fdx
+	init-ignore = "!git ls-files -o --directory | grep -v '^\\.gitignore$' | sed 's|^|/|' > .gitignore && $EDITOR .gitignore"
+
 [url "git://anongit.kde.org/"]
    insteadOf = kde:
 [url "ssh://git@git.kde.org/"]

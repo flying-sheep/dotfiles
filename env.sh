@@ -1,27 +1,54 @@
-#stuff that GUI apps need to see
+# stuff that GUI apps need to see
 
-xset b off #no annoying bell
+typeset -U path  # unique entries
+path=("$HOME/bin" "$HOME/.cargo/bin" $path)
+export DEFAULT_USER=$(whoami)
 
-if [[ -z $SSH_AGENT_PID ]]; then
-	eval "$(ssh-agent -s)"
-fi
+# Secrets
+export GITHUB_PAT=$("$SSH_ASKPASS" 'Password for "token flying-sheep@github.com"')
+
+# Application choices
 export SSH_ASKPASS='/usr/bin/ksshaskpass'
+export EDITOR=kate
+export PAGER=less
+export JPM_FIREFOX_BINARY='firefox-developer'
 
-#custom XCompose
+# less config:
+# F: quit-if-one-screen
+# R: RAW-CONTROL-CHARS
+# S: chop-long-lines
+# M: LONG-PROMPT
+# K: quit-on-intr
+# X: “more” mode. We skip that one
+export LESSOPEN='|lesspipe.sh %s'
+export SYSTEMD_LESS=FRSMK
+export LESS="-$SYSTEMD_LESS"
+export BAT_PAGER="less $LESS"
+
+# Data directories
+export R_LIBS_USER="$HOME/.local/lib/R/$(R --slave -e 'cat(as.character(getRversion()[1, 1:2]))')"
+export JUPYTERLAB_DIR="$HOME/.jupyter/lab"
+
+# custom XCompose
 export GTK_IM_MODULE=xim
 export QT_IM_MODULE=xim
 
-export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=on \
-                      -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel \
-                      -Dswing.systemlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel \
-                      -Djayatana.force=true"
+# Theming goodies
+export CALIBRE_USE_SYSTEM_THEME=1
+export GTK_USE_PORTAL=1  # Native file picker for Firefox
+export _JAVA_OPTIONS="\
+    -Dawt.useSystemAAFontSettings=on \
+    -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel \
+    -Dswing.systemlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel \
+    -Djayatana.force=true"
 
-#context minimals
-_setuptex=/opt/context-minimals/setuptex
-test -f $_setuptex && source $_setuptex
+# global menus
+export GTK_MODULES=appmenu-gtk-module
+export SAL_USE_VCLPLUGIN=gtk
 
-#some AUR packages
-export LOCAL_PACKAGE_SOURCES="$HOME/Downloads/"
+# ConTeXt
+test -f /opt/context-minimals/setuptex && source /opt/context-minimals/setuptex
 
-#VSYNC
-#export __GL_YIELD='USLEEP'
+# Fixup
+export VIRTUAL_ENV_DISABLE_PROMPT=y  # my prompt has this built in
+export WINEDLLOVERRIDES='winemenubuilder.exe=d wine setup.exe'  # prevent silly wine apps hijacking .ini files
