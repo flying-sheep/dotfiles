@@ -9,6 +9,9 @@ alias ls=exa
 alias ll='exa -l --header --git --time-style=long-iso'
 alias tree='exa --tree'
 
+alias pipup='pip3 list -o --format freeze | cut -d= -f1 | xargs pip3 install -U --user'
+alias qstat='qstat -u $USER'
+
 R() {
     if (( $# > 0 )); then
         /usr/bin/R "$@"

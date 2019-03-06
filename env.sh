@@ -1,8 +1,7 @@
-# stuff that GUI apps need to see
+export DEFAULT_USER=$(whoami)
 
 typeset -U path  # unique entries
 path=("$HOME/bin" "$HOME/.cargo/bin" $path)
-export DEFAULT_USER=$(whoami)
 
 # Secrets
 export GITHUB_PAT=$("$SSH_ASKPASS" 'Password for "token flying-sheep@github.com"')
