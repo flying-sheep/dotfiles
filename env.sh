@@ -3,14 +3,14 @@ export DEFAULT_USER=$(whoami)
 typeset -U path  # unique entries
 path=("$HOME/bin" "$HOME/.cargo/bin" $path)
 
-# Secrets
-export GITHUB_PAT=$("$SSH_ASKPASS" 'Password for "token flying-sheep@github.com"')
-
 # Application choices
-export SSH_ASKPASS='/usr/bin/ksshaskpass'
+test -f /usr/bin/ksshaskpass && export SSH_ASKPASS='/usr/bin/ksshaskpass'
 export EDITOR=kate
 export PAGER=less
 export JPM_FIREFOX_BINARY='firefox-developer'
+
+# Secrets
+export GITHUB_PAT=$("${SSH_ASKPASS-echo}" 'Password for "token flying-sheep@github.com"')
 
 # less config:
 # F: quit-if-one-screen
