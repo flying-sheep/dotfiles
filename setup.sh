@@ -4,7 +4,7 @@ test -f pacman && pacman -Qq >/dev/null \
     prezto \
     thefuck undistract-me-git pkgfile \
     bat exa \
-    ksshaskpass
+    ksshaskpass xdotool
 
 ln -s .config/dotfiles/zshrc ~/.zshrc
 ln -s .config/dotfiles/env.sh ~/.zshenv
