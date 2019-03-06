@@ -25,6 +25,9 @@ R() {
 # notify on long running commands
 if [[ -f /usr/share/undistract-me/long-running.bash ]]; then
 	source /usr/share/undistract-me/long-running.bash
+	preexec_install() {
+		true  # Do nothing, the preexec function being defined is enough for zsh.
+	}
 	notify_when_long_running_commands_finish_install
 fi
 
@@ -36,3 +39,4 @@ source "$HOME/.config/dotfiles/blur_console.sh"
 
 # Add identity
 ssh-add </dev/null 2>/dev/null
+
