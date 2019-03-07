@@ -5,12 +5,10 @@ path=("$HOME/bin" "$HOME/.cargo/bin" $path)
 
 # Application choices
 test -f /usr/bin/ksshaskpass && export SSH_ASKPASS='/usr/bin/ksshaskpass'
-export EDITOR=kate
+export EDITOR=vim
+test -n "$DISPLAY" && export EDITOR=kate
 export PAGER=less
 export JPM_FIREFOX_BINARY='firefox-developer'
-
-# Secrets
-export GITHUB_PAT=$("${SSH_ASKPASS-echo}" 'Password for "token flying-sheep@github.com"')
 
 # less config:
 # F: quit-if-one-screen

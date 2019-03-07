@@ -37,6 +37,7 @@ test -f /usr/share/doc/pkgfile/command-not-found.zsh && source /usr/share/doc/pk
 # fancy console blurring
 source "$HOME/.config/dotfiles/blur_console.sh"
 
-# Add identity
+# Secrets
 ssh-add </dev/null 2>/dev/null
+test -n "$SSH_ASKPASS" && export GITHUB_PAT=$("$SSH_ASKPASS" 'Password for "token flying-sheep@github.com"')
 
