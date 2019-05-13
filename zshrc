@@ -34,9 +34,6 @@ fi
 # command not found
 test -f /usr/share/doc/pkgfile/command-not-found.zsh && source /usr/share/doc/pkgfile/command-not-found.zsh
 
-# fancy console blurring
-source "$HOME/.config/dotfiles/blur_console.sh"
-
 # Secrets
 ssh-add </dev/null 2>/dev/null
 test -n "$SSH_ASKPASS" && export GITHUB_PAT=$("$SSH_ASKPASS" 'Password for "token flying-sheep@github.com"')
