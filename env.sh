@@ -23,7 +23,7 @@ export LESS="-$SYSTEMD_LESS"
 export BAT_PAGER="less $LESS"
 
 # Data directories
-export R_LIBS_USER="$HOME/.local/lib/R/$(R --slave -e 'cat(as.character(getRversion()[1, 1:2]))')"
+export R_LIBS_USER="$HOME/.local/lib/R/%v"
 export JUPYTERLAB_DIR="$HOME/.jupyter/lab"
 
 # custom XCompose
@@ -37,6 +37,7 @@ export _JAVA_OPTIONS="\
     -Dawt.useSystemAAFontSettings=on \
     -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel \
     -Dswing.systemlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel \
+    -Djdk.gtk.version=3 \
     -Djayatana.force=true"
 
 # global menus
