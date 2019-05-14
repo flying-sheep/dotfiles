@@ -26,7 +26,8 @@ R() {
 if [[ -f /usr/share/undistract-me/long-running.bash ]]; then
 	source /usr/share/undistract-me/long-running.bash
 	preexec_install() {
-		true  # Do nothing, the preexec function being defined is enough for zsh.
+		# Just patch precmd instead of setting traps
+		eval "$(whence -f precmd | sed '2ipreexec_set_exit')"
 	}
 	notify_when_long_running_commands_finish_install
 fi
