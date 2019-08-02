@@ -32,6 +32,7 @@ export QT_IM_MODULE=xim
 
 # Theming goodies
 export CALIBRE_USE_SYSTEM_THEME=1
+export KRITA_NO_STYLE_OVERRIDE=1
 export GTK_USE_PORTAL=1  # Native file picker for Firefox
 export _JAVA_OPTIONS="\
     -Dawt.useSystemAAFontSettings=on \
