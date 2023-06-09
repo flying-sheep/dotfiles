@@ -5,7 +5,7 @@ Managed using toml-bombadil_.
 
 First use:
 
-.. code:: nushell
+.. code:: nu
 
     bombadil link -p $nu.os-info.name
 
