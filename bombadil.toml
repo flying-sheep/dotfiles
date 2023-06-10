@@ -26,4 +26,3 @@ nushell-scripts = { source = "nushell/scripts", target = "Library/Application Su
 nushell-config = { source = "nushell/config.nu", target = "Library/Application Support/nushell/config.nu" }
 nushell-env = { source = "nushell/env.nu", target = "Library/Application Support/nushell/env.nu" }
 nushell-plugin = { source = "nushell/plugin.nu", target = "Library/Application Support/nushell/plugin.nu" }
-

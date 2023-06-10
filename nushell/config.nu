@@ -148,8 +148,17 @@ def should-be-dark [] {
   #do -i {
   #  PYTHONPATH=/opt/yin-yang python -c 'import src.yin_yang as yy; from datetime import datetime as dt; print(yy.should_be_dark(dt.now().time(), *yy.config.times))'
   #} | complete | get stdout | into bool
-  let scheme_nr = (qdbus org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read "org.freedesktop.appearance" "color-scheme" | into int)
-  return ($scheme_nr == 1)  # light: 2, no pref: 0
+  match $nu.os-info.name {
+    'linux' => {
+      let scheme_nr = (qdbus org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read "org.freedesktop.appearance" "color-scheme" | into int)
+      return ($scheme_nr == 1)  # light: 2, no pref: 0
+    },
+    'macos' => {
+      # returns error when in light mode, 'Dark' when in dark mode
+      let rv = (do -i { defaults read -g AppleInterfaceStyle } | complete | get exit_code)
+      return ($rv != 1)
+    },
+  }
 }
 
 let-env CLIPBOARD_THEME = (if (should-be-dark) { 'dark' } else { 'light' })

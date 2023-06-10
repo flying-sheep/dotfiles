@@ -58,6 +58,18 @@ let-env NU_PLUGIN_DIRS = [
 # To add entries to PATH, you can use the following pattern:
 let-env PATH = ($env.PATH | prepend [$'($env.HOME)/.local/bin'])
 
+# To add entries to PATH (on Windows you might use Path), you can use the following pattern:
+let-env PATH = ($env.PATH | split row (char esep) | prepend [
+  $'($env.HOME)/.local/bin'
+  $'($env.HOME)/.cargo/bin',
+  $'($env.HOME)/.rye/shims',
+  $'($env.HOME)/.nix-profile/bin',
+  '/nix/var/nix/profiles/default/bin',
+  '/usr/local/bin',
+])
+
+load-env (^fnm env --json | from json)
+
 echo | do -i { DISPLAY=':0' ssh-add } | ignore
 let-env EDITOR = 'kate -b'
 let-env PAGER = 'less'
