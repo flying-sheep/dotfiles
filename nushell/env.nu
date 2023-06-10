@@ -55,9 +55,6 @@ let-env NU_PLUGIN_DIRS = [
   ($'($env.HOME)/.cargo/bin'),
 ]
 
-# To add entries to PATH, you can use the following pattern:
-let-env PATH = ($env.PATH | prepend [$'($env.HOME)/.local/bin'])
-
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 let-env PATH = ($env.PATH | split row (char esep) | prepend [
   $'($env.HOME)/.local/bin'
