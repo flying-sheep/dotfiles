@@ -8,13 +8,14 @@ dotfiles_dir = ".config/dotfiles"
 #posthooks = [ "sway reload" ]
 
 [settings.dots]
-plasma-profile = { source = "env.sh", target = ".config/plasma-workspace/env/env.sh" }
 git = { source = "gitconfig", target = ".config/git/config" }
-fontconfig = { source = "fonts.conf", target = ".config/fontconfig/fonts.conf" }
 vim = { source = "vimrc", target = ".vimrc" }
-xcompose = { source = ".XCompose", target = ".XCompose" }
 
 [profiles.linux.dots]
+plasma-profile = { source = "env.sh", target = ".config/plasma-workspace/env/env.sh" }
+fontconfig = { source = "fonts.conf", target = ".config/fontconfig/fonts.conf" }
+xcompose = { source = ".XCompose", target = ".XCompose" }
+
 nushell-scripts = { source = "nushell/scripts", target = ".config/nushell/scripts" }
 nushell-config = { source = "nushell/config.nu", target = ".config/nushell/config.nu" }
 nushell-env = { source = "nushell/env.nu", target = ".config/nushell/env.nu" }
