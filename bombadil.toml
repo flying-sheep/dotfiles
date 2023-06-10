@@ -12,7 +12,7 @@ plasma-profile = { source = "env.sh", target = ".config/plasma-workspace/env/env
 git = { source = "gitconfig", target = ".config/git/config" }
 fontconfig = { source = "fonts.conf", target = ".config/fontconfig/fonts.conf" }
 vim = { source = "vimrc", target = ".vimrc" }
-xcompose = { source = "XCompose", target = ".XCompose" }
+xcompose = { source = ".XCompose", target = ".XCompose" }
 
 [profiles.linux.dots]
 nushell-scripts = { source = "nushell/scripts", target = ".config/nushell/scripts" }
