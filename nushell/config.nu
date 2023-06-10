@@ -242,7 +242,7 @@ let-env config = {
         if (term size).columns >= 100 { table -e } else { table }
       }
     } | merge (
-      if $version.major >= 1 or ($version.major == 0 and $version.minor >= 78) {
+      if not (which pkgfile | is-empty) and ($version.major >= 1 or ($version.major == 0 and $version.minor >= 78)) {
         {
           command_not_found: { |cmd_name| (
             try {
