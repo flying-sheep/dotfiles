@@ -605,6 +605,10 @@ def 'bombadil link' [] {
   ^bombadil link -p $nu.os-info.name
 }
 
+if (which yarn | is-empty) {
+  alias yarn = fnm exec --using v20.2.0 yarn
+}
+
 # Execute a closure repeatedly
 def every [duration: duration, closure: closure] {
   0.. | each { |it|
