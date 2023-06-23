@@ -60,7 +60,6 @@ export DOCKER_BUILDKIT='1'
 #test -f /opt/context-minimals/setuptex && source /opt/context-minimals/setuptex
 
 # Fixup
-export VIRTUAL_ENV_DISABLE_PROMPT=y  # my prompt has this built in
 export KWIN_DRM_USE_EGL_STREAMS='1'  # Wayland
 export WINEDLLOVERRIDES='winemenubuilder.exe=d wine setup.exe'  # prevent silly wine apps hijacking .ini files
 
