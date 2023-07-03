@@ -20,9 +20,9 @@ let-env PROMPT_COMMAND_RIGHT = { || create_right_prompt }
 
 # The prompt indicators are environmental variables that represent
 # the state of the prompt
-let-env PROMPT_INDICATOR = { || "〉" }
+let-env PROMPT_INDICATOR = { || "〉\u{200C}" }
 let-env PROMPT_INDICATOR_VI_INSERT = { || ": " }
-let-env PROMPT_INDICATOR_VI_NORMAL = { || "〉" }
+let-env PROMPT_INDICATOR_VI_NORMAL = { || "〉\u{200C}" }
 let-env PROMPT_MULTILINE_INDICATOR = { || "::: " }
 
 # Specifies how environment variables are:
@@ -65,7 +65,9 @@ let-env PATH = ($env.PATH | split row (char esep) | prepend [
   '/usr/local/bin',
 ])
 
-load-env (^fnm env --json | from json)
+if not (which fnm | is-empty) {
+  load-env (^fnm env --json | from json)
+}
 
 echo | do -i { DISPLAY=':0' ssh-add } | ignore
 let-env EDITOR = 'kate -b'
@@ -80,7 +82,8 @@ let-env BAT_PAGER = $'less ($env.LESS)'
 
 let-env DOCKER_BUILDKIT = '1'
 
-let-env PIP_REQUIRE_VIRTUALENV = 'true'
+# On systems where a global `pip` exists and the Python install isn’t marked as external, I want this:
+# let-env PIP_REQUIRE_VIRTUALENV = 'true'
 let-env PNPM_HOME = $'($env.HOME)/.local/bin'
 # TODO remove, is part of plasmashell env
 # let-env PASSWORD_STORE_DIR = $env | get -i XDG_DATA_HOME | default $'($env.HOME)/.local/share' | path join password-store
