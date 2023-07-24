@@ -455,7 +455,7 @@ def 'into filesize2' [...cols] {
   let start = $in
   $cols | reduce --fold $start { |col, df|
     $df | upsert $col { |row|
-      if ($row | get $col | empty?) { null } else { $row | get $col | into filesize }
+      if ($row | get $col | is-empty) { null } else { $row | get $col | into filesize }
     }
   }
 }
@@ -616,6 +616,22 @@ def every [duration: duration, closure: closure] {
     sleep $duration
     $ret
   }
+}
+
+def cpuinfo [] {
+  cat /proc/cpuinfo
+    | str trim
+    | split row "\n\n"
+    | each {
+      |it| $it
+      | lines
+      | split column -r '\s*:\s+'
+      | transpose -rd
+    }
+    | update flags {
+      |it| $it.flags
+      | split words
+    }
 }
 
 def "torrent list" [] {
