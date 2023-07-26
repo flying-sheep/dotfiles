@@ -614,6 +614,24 @@ if (which yarn | is-empty) {
   alias yarn = fnm exec --using v20.2.0 yarn
 }
 
+def R [...args] {
+  if (args | is-empty) {
+    ^R $args
+  } else {
+    ^jupyter console --kernel=ir
+  }
+}
+
+alias fuck = with-env {TF_ALIAS: "fuck", PYTHONIOENCODING: "utf-8"} {
+    thefuck (history | last 1 | get command.0)
+}
+
+# alias cat = bat --paging=never
+# alias less = bat
+# alias ls = exa
+# alias ll = exa -l --header --git --time-style=long-iso
+# alias tree = exa --tree
+
 # Execute a closure repeatedly
 def every [duration: duration, closure: closure] {
   0.. | each { |it|
