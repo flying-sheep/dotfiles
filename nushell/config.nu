@@ -21,7 +21,7 @@ module completions {
         { value: $sig.name, description: $"($sig.rtype) \(($sig.kind)\)" }
       }
   }
-  
+
   export extern qdbus [
     servicename?: string@"nu-complete qdbus servicenames"
     path?: string@"nu-complete qdbus path"
@@ -163,7 +163,7 @@ def should-be-dark [] {
 
 let-env CLIPBOARD_THEME = (if (should-be-dark) { 'dark' } else { 'light' })
 
-let carapace_completer = { |spans| 
+let carapace_completer = { |spans|
   {
     $spans.0: { || carapace $spans.0 nushell $spans | from json } # default
     paru: { || carapace pacman nushell $spans | from json }

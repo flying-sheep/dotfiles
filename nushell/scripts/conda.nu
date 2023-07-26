@@ -125,4 +125,3 @@ def system-path [] {
 def has-env [name: string] {
     $name in (env).name
 }
-

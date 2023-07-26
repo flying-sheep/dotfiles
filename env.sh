@@ -47,7 +47,7 @@ export _JAVA_OPTIONS="\
 export MOZ_WEBRENDER='1'
 export MOZ_ENABLE_WAYLAND='1'
 export MOZ_DBUS_REMOTE='1'
-    
+
 # global menus
 export GTK_MODULES=appmenu-gtk-module
 export SAL_USE_VCLPLUGIN=gtk
