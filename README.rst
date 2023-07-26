@@ -9,7 +9,7 @@ First use:
 
    bombadil link -p $nu.os-info.name
 
-Afterwards the ``'bombadil link'`` function in ``nushell/config.nu`` supplies ``-p``.
+Afterwards the ``'bombadil link'`` and ``'bombadil watch'`` functions in ``nushell/config.nu`` supply ``-p``.
 
 Needs the following packages:
 

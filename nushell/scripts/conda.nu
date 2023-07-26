@@ -59,8 +59,8 @@ export def-env activate [
 # Deactivate currently active conda environment
 export def-env deactivate [] {
     let path_name = if "PATH" in (env).name { "PATH" } else { "Path" }
-    let-env $path_name = $env.CONDA_OLD_PATH
-    let-env PROMPT_COMMAND = $env.CONDA_OLD_PROMPT_COMMAND
+    $env.$path_name = $env.CONDA_OLD_PATH
+    $env.PROMPT_COMMAND = $env.CONDA_OLD_PROMPT_COMMAND
 
     hide CONDA_PROMPT_MODIFIER
     hide CONDA_PREFIX
@@ -68,7 +68,7 @@ export def-env deactivate [] {
     hide CONDA_DEFAULT_ENV
     hide CONDA_OLD_PATH
 
-    let-env PROMPT_COMMAND = if 'CONDA_OLD_PROMPT_COMMAND' in (env).name {
+    $env.PROMPT_COMMAND = if 'CONDA_OLD_PROMPT_COMMAND' in (env).name {
         $env.CONDA_OLD_PROMPT_COMMAND
     } else {
         $env.PROMPT_COMMAND

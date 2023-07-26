@@ -15,21 +15,21 @@ def create_right_prompt [] {
 }
 
 # Use nushell functions to define your right and left prompt
-let-env PROMPT_COMMAND = { || create_left_prompt }
-let-env PROMPT_COMMAND_RIGHT = { || create_right_prompt }
+$env.PROMPT_COMMAND = { || create_left_prompt }
+$env.PROMPT_COMMAND_RIGHT = { || create_right_prompt }
 
 # The prompt indicators are environmental variables that represent
 # the state of the prompt
-let-env PROMPT_INDICATOR = { || "〉\u{200C}" }
-let-env PROMPT_INDICATOR_VI_INSERT = { || ": " }
-let-env PROMPT_INDICATOR_VI_NORMAL = { || "〉\u{200C}" }
-let-env PROMPT_MULTILINE_INDICATOR = { || "::: " }
+$env.PROMPT_INDICATOR = { || "〉\u{200C}" }
+$env.PROMPT_INDICATOR_VI_INSERT = { || ": " }
+$env.PROMPT_INDICATOR_VI_NORMAL = { || "〉\u{200C}" }
+$env.PROMPT_MULTILINE_INDICATOR = { || "::: " }
 
 # Specifies how environment variables are:
 # - converted from a string to a value on Nushell startup (from_string)
 # - converted from a value back to a string when running external commands (to_string)
 # Note: The conversions happen *after* config.nu is loaded
-let-env ENV_CONVERSIONS = {
+$env.ENV_CONVERSIONS = {
   "PATH": {
     from_string: { |s| $s | split row (char esep) }
     to_string: { |v| $v | str join (char esep) }
@@ -43,20 +43,20 @@ let-env ENV_CONVERSIONS = {
 # Directories to search for scripts when calling source or use
 #
 # By default, <nushell-config-dir>/scripts is added
-let-env NU_LIB_DIRS = [
+$env.NU_LIB_DIRS = [
   ($nu.config-path | path dirname | path join 'scripts')
 ]
 
 # Directories to search for plugin binaries when calling register
 #
 # By default, <nushell-config-dir>/plugins is added
-let-env NU_PLUGIN_DIRS = [
+$env.NU_PLUGIN_DIRS = [
   ($nu.config-path | path dirname | path join 'plugins'),
   ($'($env.HOME)/.cargo/bin'),
 ]
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
-let-env PATH = ($env.PATH | split row (char esep) | prepend [
+$env.PATH = ($env.PATH | split row (char esep) | prepend [
   $'($env.HOME)/.local/bin'
   $'($env.HOME)/.cargo/bin',
   $'($env.HOME)/.rye/shims',
@@ -70,20 +70,20 @@ if not (which fnm | is-empty) {
 }
 
 echo | do -i { DISPLAY=':0' ssh-add } | ignore
-let-env EDITOR = 'kate -b'
-let-env PAGER = 'less'
-let-env PARU_PAGER = 'delta'  # paru prefers $PAGER to its own config
-let-env DIFFPROG = 'delta'  # for pacdiff
-let-env MERGEPROG = 'kdiff3'  # for pacdiff
+$env.EDITOR = 'kate -b'
+$env.PAGER = 'less'
+$env.PARU_PAGER = 'delta'  # paru prefers $PAGER to its own config
+$env.DIFFPROG = 'delta'  # for pacdiff
+$env.MERGEPROG = 'kdiff3'  # for pacdiff
 
-let-env SYSTEMD_LESS = 'FRSMK'
-let-env LESS = $'-($env.SYSTEMD_LESS)'
-let-env BAT_PAGER = $'less ($env.LESS)'
+$env.SYSTEMD_LESS = 'FRSMK'
+$env.LESS = $'-($env.SYSTEMD_LESS)'
+$env.BAT_PAGER = $'less ($env.LESS)'
 
-let-env DOCKER_BUILDKIT = '1'
+$env.DOCKER_BUILDKIT = '1'
 
 # On systems where a global `pip` exists and the Python install isn’t marked as external, I want this:
-# let-env PIP_REQUIRE_VIRTUALENV = 'true'
-let-env PNPM_HOME = $'($env.HOME)/.local/bin'
+# $env.PIP_REQUIRE_VIRTUALENV = 'true'
+$env.PNPM_HOME = $'($env.HOME)/.local/bin'
 # TODO remove, is part of plasmashell env
-# let-env PASSWORD_STORE_DIR = $env | get -i XDG_DATA_HOME | default $'($env.HOME)/.local/share' | path join password-store
+# $env.PASSWORD_STORE_DIR = $env | get -i XDG_DATA_HOME | default $'($env.HOME)/.local/share' | path join password-store

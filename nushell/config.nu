@@ -161,7 +161,7 @@ def should-be-dark [] {
   }
 }
 
-let-env CLIPBOARD_THEME = (if (should-be-dark) { 'dark' } else { 'light' })
+$env.CLIPBOARD_THEME = (if (should-be-dark) { 'dark' } else { 'light' })
 
 let carapace_completer = { |spans|
   {
@@ -175,7 +175,7 @@ let carapace_completer = { |spans|
 let version = ((version).version | parse -r '^(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?$' | transpose name val | update val { |row| $row.val | into int } | transpose -ird)
 
 # The default config record. This is where much of your global configuration is setup.
-let-env config = {
+$env.config = {
   ls: {
     use_ls_colors: true  # use the LS_COLORS environment variable to colorize output
     clickable_links: true # enable or disable clickable links. Your terminal has to support links.
@@ -500,8 +500,9 @@ def 'aur clone' [repo: string] {
 
 def pacq [
   --info (-i)
-  ...pkg_args: string
+  ...pkg_args #: string https://github.com/nushell/nushell/issues/9803
 ] {
+  let pkg_args: list<string> = $pkg_args
   let pkg = (if ($pkg_args | length) == 0 { $in } else { $pkg_args })
   let raw = (
     ^python -c "
@@ -563,7 +564,7 @@ def revanced [] {
     | parse --regex '.*arrayOf\((?:"(?<ver>[\d.]+)",?\s*)+\).*'
     | get ver.0
   )
-  exit (error make {msg: $'TODO: get YouTube ($yt_ver) apk'})
+  return (error make {msg: $'TODO: get YouTube ($yt_ver) apk'})
   revanced-cli -b /usr/share/revanced/revanced-patches.jar -m /usr/share/revanced/integrations.apk -c -d 19021FDF600EBV -o youtube-revanced.apk -a `~/Downloads/com.google.android.youtube_17.49.37-1533275584_minAPI26(arm64-v8a,armeabi-v7a,x86,x86_64)(nodpi)_apkmirror.com.apk`
   # -i general-resource-ads -i general-ads -i video-ads -i amoled -i custom-branding -i minimized-playback -i integrations -i microg-support
 }
@@ -603,6 +604,10 @@ def 'fwupdmgr get-devices' [] {
 
 def 'bombadil link' [] {
   ^bombadil link -p $nu.os-info.name
+}
+
+def 'bombadil watch' [] {
+  ^bombadil watch -p $nu.os-info.name
 }
 
 if (which yarn | is-empty) {
