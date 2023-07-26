@@ -480,7 +480,7 @@ def gc [] {
   print (msg 'Pruning Docker')
   docker system prune
   print (msg 'Removing unneeded dependencies')
-  paru -Rcns (paru -Qdtq | lines)
+  paru -Qdtq | lines | { let pkgs = $in; if !($pkgs | is-empty) { paru -Rcns $pkgs } }
   print (msg 'Cleaning PKGBUILD dirs')
   for dir in ([
     (ls ~/.cache/paru/clone/* | get name),
