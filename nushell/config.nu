@@ -657,6 +657,15 @@ def cpuinfo [] {
     }
 }
 
+def 'email parse' [] {
+  let stdin = $in
+  let code = '
+import sys, email, json
+m = email.message_from_file(sys.stdin)
+json.dump({k: m.get_all(k) if len(m.get_all(k)) > 1 else m[k] for k in m}, sys.stdout)'
+  $stdin | python -c $code | from json
+}
+
 def "torrent list" [] {
   let hashes = (qdbus org.kde.ktorrent /core org.ktorrent.core.torrents | lines)
   let torrents = ($hashes | wrap hash | insert name { |e| (qdbus org.kde.ktorrent $"/torrent/($e.hash)" name | str trim) })
