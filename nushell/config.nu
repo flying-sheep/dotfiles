@@ -500,9 +500,8 @@ def 'aur clone' [repo: string] {
 
 def pacq [
   --info (-i)
-  ...pkg_args #: string https://github.com/nushell/nushell/issues/9803
+  ...pkg_args: string
 ] {
-  let pkg_args: list<string> = $pkg_args
   let pkg = (if ($pkg_args | length) == 0 { $in } else { $pkg_args })
   let raw = (
     ^python -c "
@@ -664,6 +663,20 @@ import sys, email, json
 m = email.message_from_file(sys.stdin)
 json.dump({k: m.get_all(k) if len(m.get_all(k)) > 1 else m[k] for k in m}, sys.stdout)'
   $stdin | python -c $code | from json
+}
+
+def 'sphobjinv co json' [
+  -u: bool
+  in_file: string
+  out_file: string = 'objects.json'
+] {
+  let full_args = ([(if ($u) { ['-u'] } else []), [$in_file, $out_file]] | flatten)
+  if $out_file != '-' {
+    return (^sphobjinv co json $full_args)
+  }
+  let raw = (^sphobjinv co json $full_args | complete | get stdout | from json)
+  let entries = ($raw | reject project version metadata count | values)
+  return ($raw | select project version metadata | insert entries $entries)
 }
 
 def "torrent list" [] {
