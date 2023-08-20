@@ -9,7 +9,7 @@ dotfiles_dir = ".config/dotfiles"
 
 [settings.dots]
 git = { source = "gitconfig", target = ".config/git/config" }
-vim = { source = "vimrc", target = ".vimrc" }
+vim = { source = "nvim/init.vim", target = ".config/nvim/init.vim" }
 
 [profiles.linux.dots]
 plasma-profile = { source = "env.sh", target = ".config/plasma-workspace/env/env.sh" }
