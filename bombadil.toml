@@ -15,6 +15,7 @@ vim = { source = "vimrc", target = ".vimrc" }
 plasma-profile = { source = "env.sh", target = ".config/plasma-workspace/env/env.sh" }
 fontconfig = { source = "fonts.conf", target = ".config/fontconfig/fonts.conf" }
 xcompose = { source = ".XCompose", target = ".XCompose" }
+cargo-config = { source = "cargo/config.toml", target = ".cargo/config.toml" }
 
 nushell-scripts = { source = "nushell/scripts", target = ".config/nushell/scripts" }
 nushell-config = { source = "nushell/config.nu", target = ".config/nushell/config.nu" }
