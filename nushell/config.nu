@@ -489,7 +489,7 @@ def gc [] {
   print (msg 'Pruning package cache')
   ^sudo pacman -Sc
   print (msg 'Uninstalling old Rust toolchains')
-  rustup toolchain list | lines | str replace -s ' (default)' '' | where $it =~ '^\d+[.]\d+|^nightly-\d{4}' | each { |tc| rustup toolchain uninstall $tc }
+  rustup toolchain list | lines | str replace ' (default)' '' | where $it =~ '^\d+[.]\d+|^nightly-\d{4}' | each { |tc| rustup toolchain uninstall $tc }
   $nothing
 }
 
