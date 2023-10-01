@@ -622,7 +622,7 @@ def R [...args] {
 }
 
 alias fuck = with-env {TF_ALIAS: "fuck", PYTHONIOENCODING: "utf-8"} {
-    thefuck (history | last 1 | get command.0)
+  thefuck (history | last 1 | get command.0)
 }
 
 # alias cat = bat --paging=never
@@ -729,4 +729,10 @@ def 'minifuse link' [on: bool] {
       $'alsa_output.pci-0000_31_00.4.analog-stereo:playback_($chan)'
     ] | flatten)
   }
+}
+
+def 'ssh benchmark-machine' [] {
+  let pw_jmp = (keyring get helmholtz-munich.de philipp.angerer | str trim)
+  let pw_bnh = (keyring get scvbench.helmholtz-munich.de pangerer | str trim)
+  sshpass -p $pw_jmp ssh -tt -o LogLevel=error philipp.angerer@cbjumphost sshpass -p $pw_bnh ssh -tt pangerer@scvbench bash
 }
