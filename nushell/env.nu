@@ -55,11 +55,19 @@ $env.NU_PLUGIN_DIRS = [
   ($'($env.HOME)/.cargo/bin'),
 ]
 
+let data_dir = $'($env.HOME)/(
+  if $nu.os-info.name == 'macos' {
+    "Library/Application Support"
+  } else {
+    $env | get -i XDG_DATA_HOME | default ".local/share"
+  }
+)'
+
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 $env.PATH = ($env.PATH | split row (char esep) | prepend [
   $'($env.HOME)/.local/bin'
   $'($env.HOME)/.cargo/bin',
-  $'($env.HOME)/.rye/shims',
+  $'($data_dir)/hatch/pythons/3.11/python/bin',
   $'($env.HOME)/.nix-profile/bin',
   '/nix/var/nix/profiles/default/bin',
   '/usr/local/bin',
