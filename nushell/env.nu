@@ -75,6 +75,7 @@ $env.PATH = ($env.PATH | split row (char esep) | prepend [
 
 if not (which fnm | is-empty) {
   load-env (^fnm env --json | from json)
+  $env.PATH = ($env.PATH | append $"($env.FNM_MULTISHELL_PATH)/bin")
 }
 
 echo | do -i { DISPLAY=':0' ssh-add } | ignore
