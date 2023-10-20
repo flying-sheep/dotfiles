@@ -184,7 +184,6 @@ $env.config = {
     always_trash: false  # always act as if -t was given. Can be overridden with -p
   }
   cd: {
-    abbreviations: true  # allows `cd s/o/f` to expand to `cd some/other/folder`
   }
   table: {
     mode: rounded  # basic, compact, compact_double, light, thin, with_love, rounded, reinforced, heavy, none, other
@@ -228,14 +227,14 @@ $env.config = {
   hooks: (
     {
       pre_prompt: [{ ||
-        $nothing  # replace with source code to run before the prompt is shown
+        null  # replace with source code to run before the prompt is shown
       }]
       pre_execution: [{ ||
-        $nothing  # replace with source code to run before the repl input is run
+        null  # replace with source code to run before the repl input is run
       }]
       env_change: {
         PWD: [{ |before, after|
-          $nothing  # replace with source code to run if the PWD environment is different since the last repl input
+          null  # replace with source code to run if the PWD environment is different since the last repl input
         }]
       }
       display_output: { ||
@@ -490,7 +489,7 @@ def gc [] {
   ^sudo pacman -Sc
   print (msg 'Uninstalling old Rust toolchains')
   rustup toolchain list | lines | str replace ' (default)' '' | where $it =~ '^\d+[.]\d+|^nightly-\d{4}' | each { |tc| rustup toolchain uninstall $tc }
-  $nothing
+  null
 }
 
 # Clone AUR repo via SSH URL
