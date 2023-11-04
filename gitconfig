@@ -1,5 +1,5 @@
 [core]
-	pager = delta
+	pager = git delta
 
 [user]
 	user = flying-sheep
@@ -7,7 +7,7 @@
 	email = flying-sheep@web.de
 
 [interactive]
-	diffFilter = delta --color-only
+	diffFilter = git delta --color-only
 
 [push]
 	default = simple
@@ -36,6 +36,7 @@
 	branch-empty = !git symbolic-ref HEAD refs/heads/$1 && rm .git/index && git clean -fdx
 	branch-rm-gone = "LC_ALL=C git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads/ | sed -n '/ \\[gone\\]$/{s@@@;p}' | xargs -I% git branch --delete --force %"
 	init-ignore = "!git ls-files -o --directory | grep -v '^\\.gitignore$' | sed 's|^|/|' > .gitignore && $EDITOR .gitignore"
+  delta = "!delta --${COLOR_SCHEME-light}"
 
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:

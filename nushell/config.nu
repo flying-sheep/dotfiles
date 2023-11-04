@@ -161,7 +161,8 @@ def should-be-dark [] {
   }
 }
 
-$env.CLIPBOARD_THEME = (if (should-be-dark) { 'dark' } else { 'light' })
+$env.COLOR_SCHEME = (if (should-be-dark) { 'dark' } else { 'light' })
+$env.CLIPBOARD_THEME = $env.COLOR_SCHEME
 
 let carapace_completer = { |spans|
   {
