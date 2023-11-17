@@ -184,8 +184,6 @@ $env.config = {
   rm: {
     always_trash: false  # always act as if -t was given. Can be overridden with -p
   }
-  cd: {
-  }
   table: {
     mode: rounded  # basic, compact, compact_double, light, thin, with_love, rounded, reinforced, heavy, none, other
     index_mode: always  # "always" show indexes, "never" show indexes, "auto" = show indexes when a table has "index" column
@@ -666,7 +664,7 @@ json.dump({k: m.get_all(k) if len(m.get_all(k)) > 1 else m[k] for k in m}, sys.s
 }
 
 def 'sphobjinv co json' [
-  -u: bool
+  -u
   in_file: string
   out_file: string = 'objects.json'
 ] {
