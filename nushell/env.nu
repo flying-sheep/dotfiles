@@ -81,8 +81,8 @@ if not (which fnm | is-empty) {
 echo | do -i { DISPLAY=':0' ssh-add } | ignore
 $env.EDITOR = 'kate -b'
 $env.PAGER = 'less'
-$env.PARU_PAGER = 'delta'  # paru prefers $PAGER to its own config
-$env.DIFFPROG = 'delta'  # for pacdiff
+$env.PARU_PAGER = 'git delta'  # paru prefers $PAGER to its own config
+$env.DIFFPROG = 'git delta'  # for pacdiff
 $env.MERGEPROG = 'kdiff3'  # for pacdiff
 
 $env.SYSTEMD_LESS = 'FRSMK'
