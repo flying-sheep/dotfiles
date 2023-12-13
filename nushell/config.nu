@@ -1,6 +1,6 @@
 # Nushell Config File
 
-use conda.nu
+#use conda.nu
 
 module completions {
   def "nu-complete qdbus servicenames" [] {
@@ -167,10 +167,9 @@ $env.CLIPBOARD_THEME = $env.COLOR_SCHEME
 let carapace_completer = { |spans|
   {
     $spans.0: { || carapace $spans.0 nushell $spans | from json } # default
-    #paru: { || carapace pacman nushell $spans | from json }
-    #example: { example _carapace nushell $spans | from json }
-    #vault: { carapace --bridge vault/posener nushell $spans | from json }
-  } | get $spans.0 | each {|it| do $it}
+    #example: { || example _carapace nushell $spans | from json }
+    #vault: { || carapace --bridge vault/posener nushell $spans | from json }
+  } | get $spans.0 | each { |it| do $it }
 }
 
 let version = ((version).version | parse -r '^(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?$' | transpose name val | update val { |row| $row.val | into int } | transpose -ird)
