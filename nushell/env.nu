@@ -96,3 +96,6 @@ $env.DOCKER_BUILDKIT = '1'
 $env.PNPM_HOME = $'($env.HOME)/.local/bin'
 # TODO remove, is part of plasmashell env
 # $env.PASSWORD_STORE_DIR = $env | get -i XDG_DATA_HOME | default $'($env.HOME)/.local/share' | path join password-store
+
+mkdir ~/.cache/starship
+starship init nu | save -f ~/.cache/starship/init.nu

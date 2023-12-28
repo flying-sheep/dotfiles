@@ -733,3 +733,5 @@ def 'ssh benchmark-machine' [] {
   let pw_bnh = (keyring get scvbench.helmholtz-munich.de pangerer | str trim)
   sshpass -p $pw_jmp ssh -tt -o LogLevel=error philipp.angerer@cbjumphost sshpass -p $pw_bnh ssh -tt pangerer@scvbench bash
 }
+
+use ~/.cache/starship/init.nu
