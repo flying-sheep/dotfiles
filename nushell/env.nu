@@ -78,6 +78,17 @@ if not (which fnm | is-empty) {
   $env.PATH = ($env.PATH | append $"($env.FNM_MULTISHELL_PATH)/bin")
 }
 
+if ('/opt/context-lmtx/setuptex' | path exists) {
+  load-env (
+    bash -c ". /opt/context-lmtx/setuptex; jq -n '$ENV'"
+    | from json
+    | transpose var val
+    | where var in (
+      open -r /opt/context-lmtx/setuptex | lines | parse '    export {v}' | get v
+    ) | transpose -rd
+  )
+}
+
 echo | do -i { DISPLAY=':0' ssh-add } | ignore
 $env.EDITOR = 'kate -b'
 $env.PAGER = 'less'
