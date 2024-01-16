@@ -165,11 +165,7 @@ $env.COLOR_SCHEME = (if (should-be-dark) { 'dark' } else { 'light' })
 $env.CLIPBOARD_THEME = $env.COLOR_SCHEME
 
 let carapace_completer = { |spans|
-  {
-    $spans.0: { || carapace $spans.0 nushell $spans | from json } # default
-    #example: { || example _carapace nushell $spans | from json }
-    #vault: { || carapace --bridge vault/posener nushell $spans | from json }
-  } | get $spans.0 | each { |it| do $it }
+  carapace $spans.0 nushell ...$spans | from json
 }
 
 let version = ((version).version | parse -r '^(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?$' | transpose name val | update val { |row| $row.val | into int } | transpose -ird)
@@ -206,6 +202,11 @@ $env.config = {
       enable: true  # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up my be very slow
       max_results: 100  # setting it lower can improve completion performance at the cost of omitting some options
       completer: $carapace_completer
+      #{ |spans|
+      #  $spans.0: $carapace_completer # default
+      #  example: { |spans| example _carapace nushell ...$spans | from json }
+      #  vault: { |spans| carapace --bridge vault/posener nushell ...$spans | from json }
+      #} | get $spans.0 | each { |it| do $it $spans }
     }
   }
   filesize: {

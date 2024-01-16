@@ -78,6 +78,7 @@ if not (which fnm | is-empty) {
   $env.PATH = ($env.PATH | append $"($env.FNM_MULTISHELL_PATH)/bin")
 }
 
+#TODO don’t overwrite PATH here
 if ('/opt/context-lmtx/setuptex' | path exists) {
   load-env (
     bash -c ". /opt/context-lmtx/setuptex; jq -n '$ENV'"
