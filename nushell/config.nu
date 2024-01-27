@@ -670,9 +670,9 @@ def 'sphobjinv co json' [
 ] {
   let full_args = ([(if ($u) { ['-u'] } else []), [$in_file, $out_file]] | flatten)
   if $out_file != '-' {
-    return (^sphobjinv co json $full_args)
+    return (^sphobjinv co json ...$full_args)
   }
-  let raw = (^sphobjinv co json $full_args | complete | get stdout | from json)
+  let raw = (^sphobjinv co json ...$full_args | complete | get stdout | from json)
   let entries = ($raw | reject project version metadata count | values)
   return ($raw | select project version metadata | insert entries $entries)
 }

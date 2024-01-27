@@ -58,6 +58,7 @@ export DOCKER_BUILDKIT='1'
 
 # ConTeXt
 #test -f /opt/context-minimals/setuptex && source /opt/context-minimals/setuptex
+export DIGESTIF_TEXMF=/opt/context-lmtx
 
 # Fixup
 export KWIN_DRM_USE_EGL_STREAMS='1'  # Wayland
