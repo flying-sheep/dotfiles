@@ -76,6 +76,8 @@ $env.PATH = ($env.PATH | split row (char esep) | prepend [
 if not (which fnm | is-empty) {
   load-env (^fnm env --json | from json)
   $env.PATH = ($env.PATH | append $"($env.FNM_MULTISHELL_PATH)/bin")
+  #$env.YARN_GLOBAL_FOLDER = $"($env.FNM_MULTISHELL_PATH)/yarn-global"
+  #$env.YARN_PREFIX = $env.FNM_MULTISHELL_PATH
 }
 
 #TODO don’t overwrite PATH here
@@ -91,7 +93,7 @@ if ('/opt/context-lmtx/setuptex' | path exists) {
 }
 
 echo | do -i { DISPLAY=':0' ssh-add } | ignore
-$env.EDITOR = 'kate -b'
+$env.EDITOR = (if (which kate | is-empty) { 'code -w' } else { 'kate -b' })
 $env.PAGER = 'less'
 $env.PARU_PAGER = 'git delta'  # paru prefers $PAGER to its own config
 $env.DIFFPROG = 'git delta'  # for pacdiff

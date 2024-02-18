@@ -588,7 +588,7 @@ def 'pipx list' [] {
 }
 
 def 'pip list' [] {
-  ^pip list -v --format=json | from json
+  ^pip list -v --format=json | from json | default null editable_project_location
 }
 
 def 'micromamba env list' [] {
