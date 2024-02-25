@@ -36,6 +36,8 @@
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
 
+      security.pam.enableSudoTouchIdAuth = true;
+
       # Used for backwards compatibility, please read the changelog before changing.
       # $ darwin-rebuild changelog
       system.stateVersion = 4;
@@ -46,6 +48,8 @@
   in
   {
     # Build darwin flake using:
+    # $ darwin-rebuild switch --flake .
+    # ???
     # $ darwin-rebuild build
     # (if hostname doesn’t match: $ darwin-rebuild build --flake .#MBXC7VYCV7C6)
     darwinConfigurations."MBXC7VYCV7C6" = nix-darwin.lib.darwinSystem {
