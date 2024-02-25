@@ -68,10 +68,13 @@ $env.PATH = ($env.PATH | split row (char esep) | prepend [
   $'($env.HOME)/.local/bin'
   $'($env.HOME)/.cargo/bin',
   $'($data_dir)/hatch/pythons/3.11/python/bin',
-  $'($env.HOME)/.nix-profile/bin',
+  $'($data_dir)/hatch/pythons/3.10/python/bin',
   '/nix/var/nix/profiles/default/bin',
+  '/run/current-system/sw/bin',
   '/usr/local/bin',
 ])
+
+# $env.PKG_CONFIG_PATH = $'($env.HOME)/.nix-profile/lib/pkgconfig/'
 
 if not (which fnm | is-empty) {
   load-env (^fnm env --json | from json)
