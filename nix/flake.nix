@@ -1,4 +1,4 @@
-{
+{  # https://nixcademy.com/2024/01/15/nix-on-macos/
   description = "Example Darwin system flake";
 
   inputs = {
@@ -19,7 +19,15 @@
           pkgs.rustup
           pkgs.pipx
           pkgs.pandoc
+          # system libs
+          pkgs.pkg-config
+          pkgs.openssl.dev
+          pkgs.zlib.dev
         ];
+
+      #launchd.user.envVariables.PATH = config.environment.systemPath;
+      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg.dev + /lib/pkgconfig)  [pkgs.openssl pkgs.zlib];
+      #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";
 
       # Auto upgrade nix package and the daemon service.
       services.nix-daemon.enable = true;
@@ -31,7 +39,6 @@
       # Create /etc/zshrc that loads the nix-darwin environment.
       programs.zsh.enable = true;  # default shell on catalina
       # programs.nushell.enable = true;
-      # programs.fish.enable = true;
 
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
@@ -41,6 +48,14 @@
       # Used for backwards compatibility, please read the changelog before changing.
       # $ darwin-rebuild changelog
       system.stateVersion = 4;
+
+      # https://github.com/MatthiasBenaets/nixos-config/blob/master/darwin/macbook.nix
+      system.defaults = {
+        #dock.autohide = true;
+        #dock.mru-spaces = false;
+        finder.AppleShowAllExtensions = true;
+        finder.FXPreferredViewStyle = "clmv";
+      };
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";

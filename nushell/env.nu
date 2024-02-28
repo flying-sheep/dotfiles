@@ -74,8 +74,6 @@ $env.PATH = ($env.PATH | split row (char esep) | prepend [
   '/usr/local/bin',
 ])
 
-# $env.PKG_CONFIG_PATH = $'($env.HOME)/.nix-profile/lib/pkgconfig/'
-
 if not (which fnm | is-empty) {
   load-env (^fnm env --json | from json)
   $env.PATH = ($env.PATH | append $"($env.FNM_MULTISHELL_PATH)/bin")
