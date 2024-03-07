@@ -19,6 +19,7 @@
           pkgs.rustup
           pkgs.pandoc
           pkgs.delta
+          pkgs.jaq
           pkgs.gitAndTools.gh
           # package/tool managers
           pkgs.pipx
@@ -70,12 +71,12 @@
     # $ darwin-rebuild switch --flake .
     # ???
     # $ darwin-rebuild build
-    # (if hostname doesn’t match: $ darwin-rebuild build --flake .#MBXC7VYCV7C6)
-    darwinConfigurations."MBXC7VYCV7C6" = nix-darwin.lib.darwinSystem {
+    # (if hostname doesn’t match: $ darwin-rebuild build --flake .#vishnu)
+    darwinConfigurations."vishnu" = nix-darwin.lib.darwinSystem {
       modules = [ configuration ];
     };
 
     # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations."MBXC7VYCV7C6".pkgs;
+    darwinPackages = self.darwinConfigurations."vishnu".pkgs;
   };
 }
