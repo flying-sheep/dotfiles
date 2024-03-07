@@ -17,8 +17,12 @@
           pkgs.starship
           pkgs.carapace
           pkgs.rustup
-          pkgs.pipx
           pkgs.pandoc
+          pkgs.delta
+          pkgs.gitAndTools.gh
+          # package/tool managers
+          pkgs.pipx
+          pkgs.micromamba
           # system libs
           pkgs.pkg-config
           pkgs.openssl.dev
