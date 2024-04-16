@@ -3,18 +3,18 @@
 #use conda.nu
 
 module completions {
-  def "nu-complete qdbus servicenames" [] {
-    ^qdbus | lines | where $it !~ '^:' | each { |line| $line | str trim } | sort
+  def "nu-complete qdbus6 servicenames" [] {
+    ^qdbus6 | lines | where $it !~ '^:' | each { |line| $line | str trim } | sort
   }
 
-  def "nu-complete qdbus path" [line: string, pos: int] {
+  def "nu-complete qdbus6 path" [line: string, pos: int] {
     let args = ($line | str trim | split row ' ' | skip 1)
-    ^qdbus $args.0 | lines | each { |line| $line | str trim } | sort
+    ^qdbus6 $args.0 | lines | each { |line| $line | str trim } | sort
   }
 
-  def "nu-complete qdbus method" [line: string, pos: int] {
+  def "nu-complete qdbus6 method" [line: string, pos: int] {
     let args = ($line | str trim | split row ' ' | skip 1)
-    ^qdbus $args.0 $args.1 | lines | str trim |
+    ^qdbus6 $args.0 $args.1 | lines | str trim |
       parse -r '(?P<kind>\w+) (?P<rtype>[\w\s]+) (?P<name>[\w.]+)(\((?P<args>[\w\s,]*)\))?' |
       each { |sig|
         # method [Q_NOREPLY] void org.freedesktop.DBus.Properties.Set(QString interface_name, QString property_name, QDBusVariant value)
@@ -22,10 +22,10 @@ module completions {
       }
   }
 
-  export extern qdbus [
-    servicename?: string@"nu-complete qdbus servicenames"
-    path?: string@"nu-complete qdbus path"
-    method?: string@"nu-complete qdbus method"
+  export extern qdbus6 [
+    servicename?: string@"nu-complete qdbus6 servicenames"
+    path?: string@"nu-complete qdbus6 path"
+    method?: string@"nu-complete qdbus6 method"
     ...args: string
     --system
     --bus: string
@@ -150,7 +150,7 @@ def should-be-dark [] {
   #} | complete | get stdout | into bool
   match $nu.os-info.name {
     'linux' => {
-      let scheme_nr = (qdbus org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read "org.freedesktop.appearance" "color-scheme" | into int)
+      let scheme_nr = (qdbus6 org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read "org.freedesktop.appearance" "color-scheme" | into int)
       return ($scheme_nr == 1)  # light: 2, no pref: 0
     },
     'macos' => {
@@ -478,7 +478,7 @@ def gc [] {
   print (msg 'Pruning Docker')
   docker system prune
   print (msg 'Removing unneeded dependencies')
-  paru -Qdtq | lines | { let pkgs = $in; if !($pkgs | is-empty) { paru -Rcns $pkgs } }
+  paru -Qdtq | lines | do { || let pkgs = $in; if not ($pkgs | is-empty) { paru -Rcns ...$pkgs } }
   print (msg 'Cleaning PKGBUILD dirs')
   for dir in ([
     (ls ~/.cache/paru/clone/* | get name),
@@ -678,8 +678,8 @@ def 'sphobjinv co json' [
 }
 
 def "torrent list" [] {
-  let hashes = (qdbus org.kde.ktorrent /core org.ktorrent.core.torrents | lines)
-  let torrents = ($hashes | wrap hash | insert name { |e| (qdbus org.kde.ktorrent $"/torrent/($e.hash)" name | str trim) })
+  let hashes = (qdbus6 org.kde.ktorrent /core org.ktorrent.core.torrents | lines)
+  let torrents = ($hashes | wrap hash | insert name { |e| (qdbus6 org.kde.ktorrent $"/torrent/($e.hash)" name | str trim) })
   $torrents | each { |t| { value: ($t.hash | to nuon), description: $t.name } }
 }
 
@@ -697,10 +697,10 @@ def "torrent status" [torrent_: string@"torrent list"] {
   }
 
   let torrent_arg = $'/torrent/($torrent)'
-  let total_bytes = (qdbus org.kde.ktorrent $torrent_arg org.ktorrent.torrent.totalSize | into int | into filesize)
-  let initial = (qdbus org.kde.ktorrent $torrent_arg org.ktorrent.torrent.bytesDownloaded | into int | into filesize)
+  let total_bytes = (qdbus6 org.kde.ktorrent $torrent_arg org.ktorrent.torrent.totalSize | into int | into filesize)
+  let initial = (qdbus6 org.kde.ktorrent $torrent_arg org.ktorrent.torrent.bytesDownloaded | into int | into filesize)
   every 0.06sec {
-    let bytes = (qdbus org.kde.ktorrent $torrent_arg org.ktorrent.torrent.bytesDownloaded | into int | into filesize)
+    let bytes = (qdbus6 org.kde.ktorrent $torrent_arg org.ktorrent.torrent.bytesDownloaded | into int | into filesize)
     if $bytes >= $total_bytes { break }
     $bytes | into int
   } | to text | tqdm --update_to --unit=B --unit_scale=1 --unit_divisor=1024 --null $'--total=($total_bytes | into int)' $'--initial=($initial | into int)'
