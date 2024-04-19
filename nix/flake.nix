@@ -10,6 +10,8 @@
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
   let
     configuration = { pkgs, ... }: {
+      nixpkgs.config.allowUnfree = true;  # 1password
+
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
@@ -17,10 +19,14 @@
           pkgs.starship
           pkgs.carapace
           pkgs.rustup
+          pkgs.fnm
           pkgs.pandoc
           pkgs.delta
           pkgs.jaq
           pkgs.gitAndTools.gh
+          pkgs.cmake
+          pkgs._1password
+          pkgs._1password-gui
           # package/tool managers
           pkgs.pipx
           pkgs.micromamba
