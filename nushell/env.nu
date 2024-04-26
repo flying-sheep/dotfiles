@@ -93,7 +93,7 @@ if ('/opt/context-lmtx/setuptex' | path exists) {
   )
 }
 
-echo | do -i { DISPLAY=':0' ssh-add } | ignore
+echo | do -i { DISPLAY=':0' bash -c 'ssh-add&' } | complete | ignore
 $env.EDITOR = (if (which kate | is-empty) { 'code -w' } else { 'kate -b' })
 $env.PAGER = 'less'
 $env.PARU_PAGER = 'git delta'  # paru prefers $PAGER to its own config
