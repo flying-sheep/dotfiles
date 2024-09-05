@@ -67,6 +67,7 @@ let data_dir = $'($env.HOME)/(
 $env.PATH = ($env.PATH | split row (char esep) | prepend [
   $'($env.HOME)/.local/bin'
   $'($env.HOME)/.cargo/bin',
+  $'($env.HOME)/tex/texmf-osx-arm64/bin'
   $'($data_dir)/hatch/pythons/3.11/python/bin',
   $'($data_dir)/hatch/pythons/3.10/python/bin',
   '/nix/var/nix/profiles/default/bin',

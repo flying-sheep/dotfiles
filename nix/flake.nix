@@ -26,6 +26,8 @@
           pkgs.gitAndTools.gh
           pkgs.git-lfs
           pkgs.cmake
+          # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
+          pkgs.gfortran
           pkgs.just
           pkgs._1password
           pkgs._1password-gui
@@ -36,10 +38,11 @@
           pkgs.pkg-config
           pkgs.openssl.dev
           pkgs.zlib.dev
+          pkgs.openblas.dev
         ];
 
       #launchd.user.envVariables.PATH = config.environment.systemPath;
-      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg.dev + /lib/pkgconfig)  [pkgs.openssl pkgs.zlib];
+      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg.dev + /lib/pkgconfig) [pkgs.openssl pkgs.zlib pkgs.openblas];
       #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";
 
       # Auto upgrade nix package and the daemon service.
