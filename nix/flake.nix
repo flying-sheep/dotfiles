@@ -29,8 +29,8 @@
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
           pkgs.gfortran
           pkgs.just
-          pkgs._1password
-          pkgs._1password-gui
+          #pkgs._1password
+          #pkgs._1password-gui
           # package/tool managers
           pkgs.pipx
           pkgs.micromamba
