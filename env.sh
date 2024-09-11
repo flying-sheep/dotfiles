@@ -27,7 +27,7 @@ export BAT_PAGER="less $LESS"
 
 # Data directories
 export R_LIBS_USER="$HOME/.local/lib/R/%v" # https://stat.ethz.ch/R-manual/R-devel/library/base/html/libPaths.html
-export JUPYTERLAB_DIR="$HOME/.jupyter/lab"
+# export JUPYTERLAB_DIR="$HOME/.jupyter/lab"
 export XDG_DATA_DIRS="/var/lib/flatpak/exports/share/:/usr/local/share/:/usr/share/"
 
 # custom XCompose
