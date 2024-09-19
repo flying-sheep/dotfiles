@@ -214,7 +214,6 @@ $env.config = {
     format: "auto"  # b, kb, kib, mb, mib, gb, gib, tb, tib, pb, pib, eb, eib, zb, zib, auto
   }
   color_config: (if (should-be-dark) { $dark_theme } else { $light_theme })
-  use_grid_icons: true
   footer_mode: "25"  # always, never, number_of_rows, auto
   float_precision: 2
   # buffer_editor: "emacs"  # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL

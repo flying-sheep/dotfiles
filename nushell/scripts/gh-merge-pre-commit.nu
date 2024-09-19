@@ -39,5 +39,5 @@ export def main [
       }
       { pr: $pr, note: $note }
     }
-  }
+  } | flatten
 }
