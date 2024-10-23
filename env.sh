@@ -61,6 +61,7 @@ export DOCKER_BUILDKIT='1'
 export DIGESTIF_TEXMF=/opt/context-lmtx
 
 # Fixup
+export SDL_JOYSTICK_HIDAPI='0'  # https://github.com/atar-axis/xpadneo?tab=readme-ov-file#sdl2-228-compatibility
 export KWIN_DRM_USE_EGL_STREAMS='1'  # Wayland
 export WINEDLLOVERRIDES='winemenubuilder.exe=d wine setup.exe'  # prevent silly wine apps hijacking .ini files
 
