@@ -625,14 +625,6 @@ def 'fwupdmgr get-devices' [] {
   ^fwupdmgr get-devices --json | from json | get Devices
 }
 
-def 'bombadil link' [] {
-  ^bombadil link -p $nu.os-info.name
-}
-
-def 'bombadil watch' [] {
-  ^bombadil watch -p $nu.os-info.name
-}
-
 if (which yarn | is-empty) {
   alias yarn = fnm exec --using v20.2.0 yarn
 }
