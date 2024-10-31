@@ -39,10 +39,11 @@
           pkgs.openssl.dev
           pkgs.zlib.dev
           pkgs.openblas.dev
+          pkgs.iconv.dev
         ];
 
       #launchd.user.envVariables.PATH = config.environment.systemPath;
-      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg.dev + /lib/pkgconfig) [pkgs.openssl pkgs.zlib pkgs.openblas];
+      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg.dev + /lib/pkgconfig) [pkgs.openssl pkgs.zlib pkgs.openblas pkgs.iconv];
       #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";
 
       # Auto upgrade nix package and the daemon service.
@@ -51,6 +52,8 @@
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
+
+      #nix.configureBuildUsers = true;
 
       # Create /etc/zshrc that loads the nix-darwin environment.
       programs.zsh.enable = true;  # default shell on catalina
