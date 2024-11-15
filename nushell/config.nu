@@ -689,6 +689,20 @@ json.dump({k: m.get_all(k) if len(m.get_all(k)) > 1 else m[k] for k in m}, sys.s
   $stdin | python -c $code | from json
 }
 
+def 'pypkg deps' [
+  pkg: string
+] {
+  let info = (
+    http get $"https://pypi.org/simple/($pkg)/" --headers [Accept application/vnd.pypi.simple.v1+json]
+    | from json | get files | where not yanked and core-metadata != false | last
+  )
+  # TODO: skip pre-releases
+  let whl = $info.filename | parse '{name}-{ver}-{py}-{abi}-{arch}.whl' | into record
+  let deps = (http get $"($info.url).metadata" | decode utf-8 | email parse | get Requires-Dist | find -vr 'extra ==')
+
+  { ...$whl, deps: $deps }
+}
+
 def 'sphobjinv co json' [
   -u
   in_file: string
