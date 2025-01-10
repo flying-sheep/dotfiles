@@ -34,16 +34,21 @@
           # package/tool managers
           pkgs.pipx
           pkgs.micromamba
+          pkgs.pixi
           # system libs
           pkgs.pkg-config
           pkgs.openssl.dev
           pkgs.zlib.dev
           pkgs.openblas.dev
+          pkgs.libusb1.dev
           pkgs.iconv.dev
+          pkgs.python3
+          pkgs.libcxx
         ];
 
       #launchd.user.envVariables.PATH = config.environment.systemPath;
-      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg.dev + /lib/pkgconfig) [pkgs.openssl pkgs.zlib pkgs.openblas pkgs.iconv];
+      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];
+      launchd.user.envVariables.LIBRARY_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib) [pkgs.iconv pkgs.libcxx];
       #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";
 
       # Auto upgrade nix package and the daemon service.

@@ -694,13 +694,17 @@ def 'pypkg deps' [
 ] {
   let info = (
     http get $"https://pypi.org/simple/($pkg)/" --headers [Accept application/vnd.pypi.simple.v1+json]
-    | from json | get files | where not yanked and core-metadata != false | last
+    | from json | get files | where not yanked and core-metadata != false
+    | each { |info|
+      let whl = ($info.filename | parse '{name}-{ver}-{py}-{abi}-{arch}.whl' | into record)
+      { ...$info, whl: $whl }
+    }
+    | to json | uv run --with=packaging python -c 'import sys, json, packaging.version; json.dump([e for e in json.load(sys.stdin) if not packaging.version.Version(e["whl"]["ver"]).is_prerelease], sys.stdout)' | from json
+    | last
   )
-  # TODO: skip pre-releases
-  let whl = $info.filename | parse '{name}-{ver}-{py}-{abi}-{arch}.whl' | into record
   let deps = (http get $"($info.url).metadata" | decode utf-8 | email parse | get Requires-Dist | find -vr 'extra ==')
 
-  { ...$whl, deps: $deps }
+  { ...$info.whl, deps: $deps }
 }
 
 def 'sphobjinv co json' [
