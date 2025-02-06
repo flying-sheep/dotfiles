@@ -707,6 +707,25 @@ def 'pypkg deps' [
   { ...$info.whl, deps: $deps }
 }
 
+def pyprofile [
+  --hatch-env (-e): string
+  code: string
+] {
+  let tmp = (mktemp -t --suffix=.speedscope.json)
+  let python = if ($hatch_env == null) {
+    'python'
+  } else {
+    let envs = (^hatch env find $hatch_env | lines)
+    if ($envs | length) != 1 {
+      return (error make { msg: $'Found multiple envs instead of 1: ($envs)' })
+    }
+    $'($envs | get 0)/bin/python'
+  }
+  sudo py-spy record --format speedscope -o $tmp -- $python -c $code
+  ^speedscope $tmp
+  unlink $tmp
+}
+
 def 'sphobjinv co json' [
   -u
   in_file: string
