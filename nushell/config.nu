@@ -161,9 +161,6 @@ def should-be-dark [] {
   }
 }
 
-$env.COLOR_SCHEME = (if (should-be-dark) { 'dark' } else { 'light' })
-$env.CLIPBOARD_THEME = $env.COLOR_SCHEME
-
 let carapace_completer = { |spans|
   carapace $spans.0 nushell ...$spans | from json
 }
@@ -210,8 +207,15 @@ $env.config = {
     }
   }
   filesize: {
-    metric: true  # true => KB, MB, GB (ISO standard), false => KiB, MiB, GiB (Windows standard)
-    format: "auto"  # b, kb, kib, mb, mib, gb, gib, tb, tib, pb, pib, eb, eib, zb, zib, auto
+    # - A filesize unit: "B", "kB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", or "EiB".
+    # - An automatically scaled unit: "metric" or "binary".
+    # "metric" will use units with metric (SI) prefixes like kB, MB, or GB.
+    # "binary" will use units with binary prefixes like KiB, MiB, or GiB.
+    # Otherwise, setting this to one of the filesize units will use that particular unit when displaying all file sizes.
+    unit: "metric"
+    # The number of digits to display after the decimal point for file sizes.
+    # When set to `null`, all digits after the decimal point will be displayed.
+    precision: 1
   }
   color_config: (if (should-be-dark) { $dark_theme } else { $light_theme })
   footer_mode: 25  # always, never, number_of_rows, auto
@@ -474,6 +478,19 @@ $env.config = {
     }
   ]
 }
+
+def 'sync-theme' [] {
+  $env.COLOR_SCHEME = (if (should-be-dark) { 'dark' } else { 'light' })
+  $env.CLIPBOARD_THEME = $env.COLOR_SCHEME
+
+  $env.config.color_config = (if (should-be-dark) { $dark_theme } else { $light_theme })
+
+  qdbus6 org.kde.yakuake /yakuake/MainWindow_1 org.kde.yakuake.KMainWindow.setSettingsDirty
+  let profile = (if (should-be-dark) { 'Dark' } else { 'Light' })
+  qdbus6 org.kde.yakuake | lines | find /Sessions/ | each { qdbus6 org.kde.yakuake $in org.kde.konsole.Session.setProfile $profile }
+}
+
+sync-theme
 
 def 'into filesize2' [...cols] {
   let start = $in
