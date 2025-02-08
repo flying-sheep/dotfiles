@@ -1,6 +1,7 @@
 # Nushell Config File
 
 use scripts/gh-merge-pre-commit.nu
+use scripts/task.nu
 
 module completions {
   def "nu-complete qdbus6 servicenames" [] {
@@ -738,7 +739,14 @@ def pyprofile [
     }
     $'($envs | get 0)/bin/python'
   }
-  sudo py-spy record --format speedscope -o $tmp -- $python -c $code
+  match $nu.os-info.name {
+    'linux' => {
+      py-spy record --format speedscope -o $tmp -- $python -c $code
+    },
+    'macos' => {
+      sudo py-spy record --format speedscope -o $tmp -- $python -c $code
+    },
+  }
   ^speedscope $tmp
   unlink $tmp
 }
