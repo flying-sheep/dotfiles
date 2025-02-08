@@ -730,7 +730,7 @@ def pyprofile [
   code: string
 ] {
   let tmp = (mktemp -t --suffix=.speedscope.json)
-  let python = if ($hatch_env == null) {
+  let python: string = (if ($hatch_env == null) {
     'python'
   } else {
     let envs = (^hatch env find $hatch_env | lines)
@@ -738,14 +738,11 @@ def pyprofile [
       return (error make { msg: $'Found multiple envs instead of 1: ($envs)' })
     }
     $'($envs | get 0)/bin/python'
-  }
+  })
+  let cmd = [py-spy record --format speedscope -o $tmp -- $python -c $code]
   match $nu.os-info.name {
-    'linux' => {
-      py-spy record --format speedscope -o $tmp -- $python -c $code
-    },
-    'macos' => {
-      sudo py-spy record --format speedscope -o $tmp -- $python -c $code
-    },
+    'linux' => { run-external ...$cmd },
+    'macos' => { run-external sudo ...$cmd },
   }
   ^speedscope $tmp
   unlink $tmp
