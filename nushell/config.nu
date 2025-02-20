@@ -727,6 +727,7 @@ def 'pypkg deps' [
 
 def pyprofile [
   --hatch-env (-e): string
+  --rate (-r): int = 100
   code: string
 ] {
   let tmp = (mktemp -t --suffix=.speedscope.json)
@@ -739,7 +740,7 @@ def pyprofile [
     }
     $'($envs | get 0)/bin/python'
   })
-  let cmd = [py-spy record --format speedscope -o $tmp -- $python -c $code]
+  let cmd = [py-spy record --format speedscope -r $rate -o $tmp -- $python -c $code]
   match $nu.os-info.name {
     'linux' => { run-external ...$cmd },
     'macos' => { run-external sudo ...$cmd },
