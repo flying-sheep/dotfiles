@@ -486,9 +486,14 @@ def 'sync-theme' [] {
 
   $env.config.color_config = (if (should-be-dark) { $dark_theme } else { $light_theme })
 
-  qdbus6 org.kde.yakuake /yakuake/MainWindow_1 org.kde.yakuake.KMainWindow.setSettingsDirty
-  let profile = (if (should-be-dark) { 'Dark' } else { 'Light' })
-  qdbus6 org.kde.yakuake | lines | find /Sessions/ | each { qdbus6 org.kde.yakuake $in org.kde.konsole.Session.setProfile $profile }
+  match $nu.os-info.name {
+    'linux' => {
+      qdbus6 org.kde.yakuake /yakuake/MainWindow_1 org.kde.yakuake.KMainWindow.setSettingsDirty
+      let profile = (if (should-be-dark) { 'Dark' } else { 'Light' })
+      qdbus6 org.kde.yakuake | lines | find /Sessions/ | each { qdbus6 org.kde.yakuake $in org.kde.konsole.Session.setProfile $profile }
+    },
+    'macos' => {},
+  }
 }
 
 sync-theme
@@ -747,6 +752,17 @@ def pyprofile [
   }
   ^speedscope $tmp
   unlink $tmp
+}
+
+def 'hatch env find' [search: string] {
+  ^hatch env find hatch-test | lines | each { |path|
+    let exists = try { ls -D $path; true } catch { false }
+    if $exists {
+      $path | url encode | prepend 'file://' | str join '' | ansi link --text $path
+    } else {
+      $path
+    }
+  }
 }
 
 def 'sphobjinv co json' [
