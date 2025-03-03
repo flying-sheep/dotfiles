@@ -755,7 +755,7 @@ def pyprofile [
 }
 
 def 'hatch env find' [search: string] {
-  ^hatch env find hatch-test | lines | each { |path|
+  ^hatch env find $search | lines | each { |path|
     let exists = try { ls -D $path; true } catch { false }
     if $exists {
       $path | url encode | prepend 'file://' | str join '' | ansi link --text $path
