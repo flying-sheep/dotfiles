@@ -3,13 +3,10 @@ dotfiles
 
 Managed using toml-bombadil_.
 
-First use:
-
 .. code:: nu
 
-   bombadil link -p $nu.os-info.name
-
-Afterwards the ``'bombadil link'`` and ``'bombadil watch'`` functions in ``nushell/config.nu`` supply ``-p``.
+  bombadil link
+  bombadil watch
 
 Needs the following packages:
 
