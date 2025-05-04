@@ -9,7 +9,7 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
   let
-    configuration = { pkgs, ... }: {
+    configuration = { pkgs, config, ... }: {
       nixpkgs.config.allowUnfree = true;  # 1password
 
       # List packages installed in system profile. To search by name, run:
@@ -22,7 +22,8 @@
           pkgs.fnm
           pkgs.pandoc
           pkgs.delta
-          pkgs.jaq
+          pkgs.jq
+          pkgs.pest-ide-tools
           pkgs.gitAndTools.gh
           pkgs.git-lfs
           pkgs.cmake
@@ -33,8 +34,9 @@
           #pkgs._1password-gui
           # package/tool managers
           pkgs.pipx
-          pkgs.micromamba
           pkgs.pixi
+          pkgs.cargo-generate
+          pkgs.cargo-leptos
           # system libs
           pkgs.pkg-config
           pkgs.openssl.dev
@@ -46,7 +48,7 @@
           pkgs.libcxx
         ];
 
-      #launchd.user.envVariables.PATH = config.environment.systemPath;
+      # launchd.user.envVariables.PATH = nixpkgs.lib.strings.concatStringsSep ":" ["/usr/local/hatch/bin" config.environment.systemPath];
       launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];
       launchd.user.envVariables.LIBRARY_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib) [pkgs.iconv pkgs.libcxx];
       #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";
