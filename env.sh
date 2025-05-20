@@ -5,7 +5,10 @@ typeset -U path  # unique entries
 path=("$HOME/bin" "$HOME/.cargo/bin" $path "$HOME/.local/bin")
 
 # Application choices
-test -f /usr/bin/ksshaskpass && export SSH_ASKPASS='/usr/bin/ksshaskpass'
+if test -f /usr/bin/ksshaskpass; then
+  export SSH_ASKPASS='/usr/bin/ksshaskpass'
+  export SSH_ASKPASS_REQUIRE='prefer'
+fi
 export EDITOR=nvim
 test -n "$DISPLAY" && export EDITOR='kate -b'
 export PAGER=less
