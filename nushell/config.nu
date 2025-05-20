@@ -155,330 +155,325 @@ def should-be-dark [] {
       return ($scheme_nr == 1)  # light: 2, no pref: 0
     },
     'macos' => {
-      # returns error when in light mode, 'Dark' when in dark mode
+      # returns error when in light mode, 'Dark' when in dark mode 🤷
       let rv = (do -i { defaults read -g AppleInterfaceStyle } | complete | get exit_code)
       return ($rv != 1)
     },
   }
 }
 
-let carapace_completer = { |spans|
-  carapace $spans.0 nushell ...$spans | from json
-}
-
 let version = ((version).version | parse -r '^(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?$' | transpose name val | update val { |row| $row.val | into int } | transpose -ird)
 
-# The default config record. This is where much of your global configuration is setup.
-$env.config = {
-  ls: {
-    use_ls_colors: true  # use the LS_COLORS environment variable to colorize output
-    clickable_links: true # enable or disable clickable links. Your terminal has to support links.
-  }
-  rm: {
-    always_trash: false  # always act as if -t was given. Can be overridden with -p
-  }
-  table: {
-    mode: rounded  # basic, compact, compact_double, light, thin, with_love, rounded, reinforced, heavy, none, other
-    index_mode: always  # "always" show indexes, "never" show indexes, "auto" = show indexes when a table has "index" column
-    trim: {
-      methodology: wrapping  # wrapping or truncating
-      wrapping_try_keep_words: true  # A strategy used by the 'wrapping' methodology
-      truncating_suffix: "..."  # A suffix used by the 'truncating' methodology
-    }
-  }
-  history: {
-    max_size: 10000 # Session has to be reloaded for this to take effect
-    sync_on_enter: true # Enable to share the history between multiple sessions, else you have to close the session to persist history to file
-    file_format: "plaintext"  # "sqlite" or "plaintext"
-  }
-  completions: {
-    case_sensitive: false  # set to true to enable case-sensitive completions
-    quick: true  # set this to false to prevent auto-selecting completions when only one remains
-    partial: true  # set this to false to prevent partial filling of the prompt
-    algorithm: "fuzzy"  # prefix or fuzzy
-    external: {
-      enable: true  # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up my be very slow
-      max_results: 100  # setting it lower can improve completion performance at the cost of omitting some options
-      completer: $carapace_completer
-      #{ |spans|
-      #  $spans.0: $carapace_completer # default
-      #  example: { |spans| example _carapace nushell ...$spans | from json }
-      #  vault: { |spans| carapace --bridge vault/posener nushell ...$spans | from json }
-      #} | get $spans.0 | each { |it| do $it $spans }
-    }
-  }
-  filesize: {
-    # - A filesize unit: "B", "kB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", or "EiB".
-    # - An automatically scaled unit: "metric" or "binary".
-    # "metric" will use units with metric (SI) prefixes like kB, MB, or GB.
-    # "binary" will use units with binary prefixes like KiB, MiB, or GiB.
-    # Otherwise, setting this to one of the filesize units will use that particular unit when displaying all file sizes.
-    unit: "metric"
-    # The number of digits to display after the decimal point for file sizes.
-    # When set to `null`, all digits after the decimal point will be displayed.
-    precision: 1
-  }
-  color_config: (if (should-be-dark) { $dark_theme } else { $light_theme })
-  footer_mode: 25  # always, never, number_of_rows, auto
-  float_precision: 2
-  # buffer_editor: "emacs"  # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL
-  use_ansi_coloring: true
-  edit_mode: emacs  # emacs, vi
-  shell_integration: {
-      # osc2 abbreviates the path if in the home_dir, sets the tab/window title, shows the running command in the tab/window title
-      osc2: true
-      # osc7 is a way to communicate the path to the terminal, this is helpful for spawning new tabs in the same directory
-      osc7: true
-      # osc8 is also implemented as the deprecated setting ls.show_clickable_links, it shows clickable links in ls output if your terminal supports it. show_clickable_links is deprecated in favor of osc8
-      osc8: true
-      # osc9_9 is from ConEmu and is starting to get wider support. It's similar to osc7 in that it communicates the path to the terminal
-      osc9_9: false
-      # osc133 is several escapes invented by Final Term which include the supported ones below.
-      # 133;A - Mark prompt start
-      # 133;B - Mark prompt end
-      # 133;C - Mark pre-execution
-      # 133;D;exit - Mark execution finished with exit code
-      # This is used to enable terminals to know where the prompt is, the command is, where the command finishes, and where the output of the command is
-      osc133: true
-      # osc633 is closely related to osc133 but only exists in visual studio code (vscode) and supports their shell integration features
-      # 633;A - Mark prompt start
-      # 633;B - Mark prompt end
-      # 633;C - Mark pre-execution
-      # 633;D;exit - Mark execution finished with exit code
-      # 633;E - NOT IMPLEMENTED - Explicitly set the command line with an optional nonce
-      # 633;P;Cwd=<path> - Mark the current working directory and communicate it to the terminal
-      # and also helps with the run recent menu in vscode
-      osc633: true
-      # reset_application_mode is escape \x1b[?1l and was added to help ssh work better
-      reset_application_mode: true
-  }
-  show_banner: false
-  render_right_prompt_on_last_line: false  # true or false to enable or disable right prompt to be rendered on last line of the prompt.
-  hooks: (
-    {
-      pre_prompt: [{ ||
-        null  # replace with source code to run before the prompt is shown
-      }]
-      pre_execution: [{ ||
-        null  # replace with source code to run before the repl input is run
-      }]
-      env_change: {
-        PWD: [{ |before, after|
-          null  # replace with source code to run if the PWD environment is different since the last repl input
-        }]
-      }
-      display_output: { ||
-        if (term size).columns >= 100 { table -e } else { table }
-      }
-    } | merge (
-      if not (which pkgfile | is-empty) and ($version.major >= 1 or ($version.major == 0 and $version.minor >= 78)) {
-        {
-          command_not_found: { |cmd_name| (
-            try {
-              let pkgs = (pkgfile --binaries --verbose $cmd_name)
-              if not ($pkgs | is-empty) {
-                (
-                  $"(ansi $env.config.color_config.shape_external)($cmd_name)(ansi reset) " +
-                  $"may be found in the following packages:\n($pkgs)"
-                )
-              } else {
-                null
-              }
-            } catch {
-              null
-            }
-          ) }
-        }
-      } else { {} }
-    )
-  )
-  menus: [
-    # Configuration for default nushell menus
-    # Note the lack of souce parameter
-    {
-      name: completion_menu
-      only_buffer_difference: false
-      marker: "| "
-      type: {
-          layout: columnar
-          columns: 4
-          col_width: 20   # Optional value. If missing all the screen width is used to calculate column width
-          col_padding: 2
-      }
-      style: {
-          text: green
-          selected_text: green_reverse
-          description_text: yellow
-      }
-    }
-    {
-      name: history_menu
-      only_buffer_difference: true
-      marker: "? "
-      type: {
-          layout: list
-          page_size: 10
-      }
-      style: {
-          text: green
-          selected_text: green_reverse
-          description_text: yellow
-      }
-    }
-    {
-      name: help_menu
-      only_buffer_difference: true
-      marker: "? "
-      type: {
-          layout: description
-          columns: 4
-          col_width: 20   # Optional value. If missing all the screen width is used to calculate column width
-          col_padding: 2
-          selection_rows: 4
-          description_rows: 10
-      }
-      style: {
-          text: green
-          selected_text: green_reverse
-          description_text: yellow
-      }
-    }
-    # Example of extra menus created using a nushell source
-    # Use the source field to create a list of records that populates
-    # the menu
-    {
-      name: commands_menu
-      only_buffer_difference: false
-      marker: "# "
-      type: {
-          layout: columnar
-          columns: 4
-          col_width: 20
-          col_padding: 2
-      }
-      style: {
-          text: green
-          selected_text: green_reverse
-          description_text: yellow
-      }
-      source: { |buffer, position|
-          $nu.scope.commands
-          | where command =~ $buffer
-          | each { |it| {value: $it.command description: $it.usage} }
-      }
-    }
-    {
-      name: vars_menu
-      only_buffer_difference: true
-      marker: "# "
-      type: {
-          layout: list
-          page_size: 10
-      }
-      style: {
-          text: green
-          selected_text: green_reverse
-          description_text: yellow
-      }
-      source: { |buffer, position|
-          $nu.scope.vars
-          | where name =~ $buffer
-          | sort-by name
-          | each { |it| {value: $it.name description: $it.type} }
-      }
-    }
-    {
-      name: commands_with_description
-      only_buffer_difference: true
-      marker: "# "
-      type: {
-          layout: description
-          columns: 4
-          col_width: 20
-          col_padding: 2
-          selection_rows: 4
-          description_rows: 10
-      }
-      style: {
-          text: green
-          selected_text: green_reverse
-          description_text: yellow
-      }
-      source: { |buffer, position|
-          $nu.scope.commands
-          | where command =~ $buffer
-          | each { |it| {value: $it.command description: $it.usage} }
-      }
-    }
-  ]
-  keybindings: [
-    {
-      name: completion_menu
-      modifier: none
-      keycode: tab
-      mode: emacs # Options: emacs vi_normal vi_insert
-      event: {
-        until: [
-          { send: menu name: completion_menu }
-          { send: menunext }
-        ]
-      }
-    }
-    {
-      name: completion_previous
-      modifier: shift
-      keycode: backtab
-      mode: [emacs, vi_normal, vi_insert] # Note: You can add the same keybinding to all modes by using a list
-      event: { send: menuprevious }
-    }
-    {
-      name: history_menu
-      modifier: control
-      keycode: char_x
-      mode: emacs
-      event: {
-        until: [
-          { send: menu name: history_menu }
-          { send: menupagenext }
-        ]
-      }
-    }
-    {
-      name: history_previous
-      modifier: control
-      keycode: char_z
-      mode: emacs
-      event: {
-        until: [
-          { send: menupageprevious }
-          { edit: undo }
-        ]
-      }
-    }
-    # Keybindings used to trigger the user defined menus
-    {
-      name: commands_menu
-      modifier: control
-      keycode: char_t
-      mode: [emacs, vi_normal, vi_insert]
-      event: { send: menu name: commands_menu }
-    }
-    {
-      name: vars_menu
-      modifier: control
-      keycode: char_y
-      mode: [emacs, vi_normal, vi_insert]
-      event: { send: menu name: vars_menu }
-    }
-    {
-      name: commands_with_description
-      modifier: control
-      keycode: char_u
-      mode: [emacs, vi_normal, vi_insert]
-      event: { send: menu name: commands_with_description }
-    }
-  ]
+$env.config.ls.use_ls_colors = true  # use the LS_COLORS environment variable to colorize output
+$env.config.ls.clickable_links = true # enable or disable clickable links. Your terminal has to support links.
+$env.config.rm.always_trash = false  # always act as if -t was given. Can be overridden with -p
+$env.config.table.mode = "rounded"  # basic, compact, compact_double, light, thin, with_love, rounded, reinforced, heavy, none, other
+$env.config.table.index_mode = "always"  # "always" show indexes, "never" show indexes, "auto" = show indexes when a table has "index" column
+$env.config.table.trim.methodology = "wrapping"  # wrapping or truncating
+$env.config.table.trim.wrapping_try_keep_words = true  # A strategy used by the 'wrapping' methodology
+$env.config.table.trim.truncating_suffix = "..."  # A suffix used by the 'truncating' methodology
+$env.config.history.max_size = 10000 # Session has to be reloaded for this to take effect
+$env.config.history.sync_on_enter = true # Enable to share the history between multiple sessions, else you have to close the session to persist history to file
+$env.config.history.file_format = "plaintext"  # "sqlite" or "plaintext"
+
+# https://www.nushell.sh/cookbook/external_completers.html
+let carapace_completer = { |spans: list<string>|
+  carapace $spans.0 nushell ...$spans
+  | from json
+  | if ($in | default [] | where value == $"($spans | last)ERR" | is-empty) { $in } else { null }
 }
+let fish_completer = { |spans: list<string>|
+  fish --command $"complete '--do-complete=($spans | str join ' ')'"
+  | from tsv --flexible --noheaders --no-infer
+  | rename value description
+  | update value {
+    if ($in | path exists) {$'"($in | str replace "\"" "\\\"" )"'} else {$in}
+  }
+}
+$env.config.completions.case_sensitive = false  # set to true to enable case-sensitive completions
+$env.config.completions.quick = true  # set this to false to prevent auto-selecting completions when only one remains
+$env.config.completions.partial = true  # set this to false to prevent partial filling of the prompt
+$env.config.completions.algorithm = "fuzzy"  # 'prefix', 'substring', or 'fuzzy'
+$env.config.completions.external.enable = true  # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up my be very slow
+$env.config.completions.external.max_results = 100  # setting it lower can improve completion performance at the cost of omitting some options
+$env.config.completions.external.completer = {|spans|
+  let expanded_alias = scope aliases
+  | where name == $spans.0
+  | get -i 0.expansion
+
+  let spans = if $expanded_alias != null {
+    $spans
+    | skip 1
+    | prepend ($expanded_alias | split row ' ' | take 1)
+  } else {
+    $spans
+  }
+
+  match $spans.0 {
+    # carapace completions are incorrect for nu
+    nu => $fish_completer
+    # fish completes commits and branch names in a nicer way
+    git => $fish_completer
+    # carapace doesn't have completions for asdf
+    asdf => $fish_completer
+    # use zoxide completions for zoxide commands
+    #__zoxide_z | __zoxide_zi => $zoxide_completer
+    _ => $carapace_completer
+  } | do $in $spans
+}
+
+# - A filesize unit: "B", "kB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", or "EiB".
+# - An automatically scaled unit: "metric" or "binary".
+# "metric" will use units with metric (SI) prefixes like kB, MB, or GB.
+# "binary" will use units with binary prefixes like KiB, MiB, or GiB.
+# Otherwise, setting this to one of the filesize units will use that particular unit when displaying all file sizes.
+$env.config.filesize.unit = "metric"
+# The number of digits to display after the decimal point for file sizes.
+# When set to `null`, all digits after the decimal point will be displayed.
+$env.config.filesize.precision = 1
+$env.config.color_config = (if (should-be-dark) { $dark_theme } else { $light_theme })
+$env.config.footer_mode = 25  # always, never, number_of_rows, auto
+$env.config.float_precision = 2
+# $env.config.buffer_editor: "emacs"  # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL
+$env.config.use_ansi_coloring = true
+$env.config.edit_mode = 'emacs'  # emacs, vi
+# osc2 abbreviates the path if in the home_dir, sets the tab/window title, shows the running command in the tab/window title
+$env.config.shell_integration.osc2 = true
+# osc7 is a way to communicate the path to the terminal, this is helpful for spawning new tabs in the same directory
+$env.config.shell_integration.osc7 = true
+# osc8 is also implemented as the deprecated setting ls.show_clickable_links, it shows clickable links in ls output if your terminal supports it. show_clickable_links is deprecated in favor of osc8
+$env.config.shell_integration.osc8 = true
+# osc9_9 is from ConEmu and is starting to get wider support. It's similar to osc7 in that it communicates the path to the terminal
+$env.config.shell_integration.osc9_9 = false
+# osc133 is several escapes invented by Final Term which include the supported ones below.
+# 133;A - Mark prompt start
+# 133;B - Mark prompt end
+# 133;C - Mark pre-execution
+# 133;D;exit - Mark execution finished with exit code
+# This is used to enable terminals to know where the prompt is, the command is, where the command finishes, and where the output of the command is
+$env.config.shell_integration.osc133 = true
+# osc633 is closely related to osc133 but only exists in visual studio code (vscode) and supports their shell integration features
+# 633;A - Mark prompt start
+# 633;B - Mark prompt end
+# 633;C - Mark pre-execution
+# 633;D;exit - Mark execution finished with exit code
+# 633;E - NOT IMPLEMENTED - Explicitly set the command line with an optional nonce
+# 633;P;Cwd=<path> - Mark the current working directory and communicate it to the terminal
+# and also helps with the run recent menu in vscode
+$env.config.shell_integration.osc633 = true
+# reset_application_mode is escape \x1b[?1l and was added to help ssh work better
+$env.config.shell_integration.reset_application_mode = true
+$env.config.show_banner = false
+$env.config.render_right_prompt_on_last_line = false  # true or false to enable or disable right prompt to be rendered on last line of the prompt.
+#$env.config.hooks.pre_prompt = [{ || ... }]
+#$env.config.hooks.pre_execution = [{ || ... }]
+#$env.config.hooks.env_change.PWD = [{ |before, after| ... }]  # # runs if the PWD environment is different since the last repl input
+$env.config.hooks.display_output = { ||
+  if (term size).columns >= 100 { table -e } else { table }
+}
+if not (which pkgfile | is-empty) and ($version.major >= 1 or ($version.major == 0 and $version.minor >= 78)) {
+  $env.config.hooks.command_not_found = { |cmd_name: string| (
+    try {
+      let pkgs = (pkgfile --binaries --verbose $cmd_name)
+      if not ($pkgs | is-empty) {
+        (
+          $"(ansi $env.config.color_config.shape_external)($cmd_name)(ansi reset) " +
+          $"may be found in the following packages:\n($pkgs)"
+        )
+      } else {
+        null
+      }
+    } catch {
+      null
+    }
+  ) }
+}
+$env.config.menus = [
+  # Configuration for default nushell menus
+  # Note the lack of souce parameter
+  {
+    name: completion_menu
+    only_buffer_difference: false
+    marker: "| "
+    type: {
+        layout: columnar
+        columns: 4
+        col_width: 20   # Optional value. If missing all the screen width is used to calculate column width
+        col_padding: 2
+    }
+    style: {
+        text: green
+        selected_text: green_reverse
+        description_text: yellow
+    }
+  }
+  {
+    name: history_menu
+    only_buffer_difference: true
+    marker: "? "
+    type: {
+        layout: list
+        page_size: 10
+    }
+    style: {
+        text: green
+        selected_text: green_reverse
+        description_text: yellow
+    }
+  }
+  {
+    name: help_menu
+    only_buffer_difference: true
+    marker: "? "
+    type: {
+        layout: description
+        columns: 4
+        col_width: 20   # Optional value. If missing all the screen width is used to calculate column width
+        col_padding: 2
+        selection_rows: 4
+        description_rows: 10
+    }
+    style: {
+        text: green
+        selected_text: green_reverse
+        description_text: yellow
+    }
+  }
+  # Example of extra menus created using a nushell source
+  # Use the source field to create a list of records that populates
+  # the menu
+  {
+    name: commands_menu
+    only_buffer_difference: false
+    marker: "# "
+    type: {
+        layout: columnar
+        columns: 4
+        col_width: 20
+        col_padding: 2
+    }
+    style: {
+        text: green
+        selected_text: green_reverse
+        description_text: yellow
+    }
+    source: { |buffer, position|
+        $nu.scope.commands
+        | where command =~ $buffer
+        | each { |it| {value: $it.command description: $it.usage} }
+    }
+  }
+  {
+    name: vars_menu
+    only_buffer_difference: true
+    marker: "# "
+    type: {
+        layout: list
+        page_size: 10
+    }
+    style: {
+        text: green
+        selected_text: green_reverse
+        description_text: yellow
+    }
+    source: { |buffer, position|
+        $nu.scope.vars
+        | where name =~ $buffer
+        | sort-by name
+        | each { |it| {value: $it.name description: $it.type} }
+    }
+  }
+  {
+    name: commands_with_description
+    only_buffer_difference: true
+    marker: "# "
+    type: {
+        layout: description
+        columns: 4
+        col_width: 20
+        col_padding: 2
+        selection_rows: 4
+        description_rows: 10
+    }
+    style: {
+        text: green
+        selected_text: green_reverse
+        description_text: yellow
+    }
+    source: { |buffer, position|
+        $nu.scope.commands
+        | where command =~ $buffer
+        | each { |it| {value: $it.command description: $it.usage} }
+    }
+  }
+]
+$env.config.keybindings = [
+  {
+    name: completion_menu
+    modifier: none
+    keycode: tab
+    mode: emacs # Options: emacs vi_normal vi_insert
+    event: {
+      until: [
+        { send: menu name: completion_menu }
+        { send: menunext }
+      ]
+    }
+  }
+  {
+    name: completion_previous
+    modifier: shift
+    keycode: backtab
+    mode: [emacs, vi_normal, vi_insert] # Note: You can add the same keybinding to all modes by using a list
+    event: { send: menuprevious }
+  }
+  {
+    name: history_menu
+    modifier: control
+    keycode: char_x
+    mode: emacs
+    event: {
+      until: [
+        { send: menu name: history_menu }
+        { send: menupagenext }
+      ]
+    }
+  }
+  {
+    name: history_previous
+    modifier: control
+    keycode: char_z
+    mode: emacs
+    event: {
+      until: [
+        { send: menupageprevious }
+        { edit: undo }
+      ]
+    }
+  }
+  # Keybindings used to trigger the user defined menus
+  {
+    name: commands_menu
+    modifier: control
+    keycode: char_t
+    mode: [emacs, vi_normal, vi_insert]
+    event: { send: menu name: commands_menu }
+  }
+  {
+    name: vars_menu
+    modifier: control
+    keycode: char_y
+    mode: [emacs, vi_normal, vi_insert]
+    event: { send: menu name: vars_menu }
+  }
+  {
+    name: commands_with_description
+    modifier: control
+    keycode: char_u
+    mode: [emacs, vi_normal, vi_insert]
+    event: { send: menu name: commands_with_description }
+  }
+]
 
 def 'sync-theme' [] {
   $env.COLOR_SCHEME = (if (should-be-dark) { 'dark' } else { 'light' })

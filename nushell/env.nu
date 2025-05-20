@@ -93,6 +93,7 @@ if ('/opt/context-lmtx/setuptex' | path exists) {
       open -r /opt/context-lmtx/setuptex | lines | parse '    export {v}' | get v
     ) | transpose -rd
   )
+  $env.PATH = $env.PATH | split row (char esep)
 }
 
 echo | do -i { DISPLAY=':0' bash -c 'ssh-add&' } | complete | ignore
