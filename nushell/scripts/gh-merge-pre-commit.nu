@@ -18,12 +18,19 @@ export def main [
         | get check_runs
         | where { |run| $run.conclusion in ["failure", "cancelled", "skipped", "timed_out", "action_required", null] }
       )
+      let failed_statuses = (
+        gh api $"repos/($pr.head.repo.full_name)/commits/($pr.head.sha)/status"
+        | from json
+        | get statuses
+        | where { |status| $status.state in ["error", "failure"] }
+      )
+      let failed = [...($failed_checks | get name) ...($failed_statuses | get context)]
       mut skip_resp = { pr: $"Skipped ($desc)", note: $"Skipped notification “($thread.subject.title)”" }
 
       if $pr.changed_files != 1 or not ($pr.mergeable | default false) {
         return $skip_resp
-      } else if not ($failed_checks | is-empty) {
-        $skip_resp.pr = $"Skipped ($desc) because of failing statuses: ($failed_checks | get name)"
+      } else if not ($failed | is-empty) {
+        $skip_resp.pr = $"Skipped ($desc) because of failing checks/statuses: ($failed)"
         return $skip_resp
       }
       # Do stuff (or not if -n is passed)
