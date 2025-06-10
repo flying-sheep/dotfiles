@@ -656,7 +656,7 @@ if (which yarn | is-empty) {
 }
 
 def R [...args] {
-  if (args | is-empty) {
+  if ($args | is-empty) {
     ^jupyter console --kernel=ir
   } else {
     ^R $args
