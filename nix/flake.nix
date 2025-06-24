@@ -27,6 +27,7 @@
           pkgs.gitAndTools.gh
           pkgs.git-lfs
           pkgs.cmake
+          pkgs.ocamlPackages.cpdf
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
           pkgs.gfortran
           pkgs.just
