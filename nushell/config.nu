@@ -199,7 +199,7 @@ $env.config.completions.external.max_results = 100  # setting it lower can impro
 $env.config.completions.external.completer = {|spans|
   let expanded_alias = scope aliases
   | where name == $spans.0
-  | get -i 0.expansion
+  | get -o 0.expansion
 
   let spans = if $expanded_alias != null {
     $spans

@@ -8,7 +8,7 @@ export def main [
   gh api --paginate -X GET notifications -q '[.[] | select(.subject.type == "PullRequest" and .subject.title == "[pre-commit.ci] pre-commit autoupdate")]' | from json --objects | each { |threads|
     # TODO: handle milestones
 
-    $threads | par-each { |thread|
+    $threads | par-each --keep-order { |thread|
       # https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#get-a-pull-request
       let pr = (gh api $thread.subject.url | from json)
       let desc = $"($pr.html_url | ansi link --text $'($pr.base.repo.full_name)#($pr.number)' ) “($pr.title)”"

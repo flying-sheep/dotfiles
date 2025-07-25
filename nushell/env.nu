@@ -59,7 +59,7 @@ let data_dir = $'($env.HOME)/(
   if $nu.os-info.name == 'macos' {
     "Library/Application Support"
   } else {
-    $env | get -i XDG_DATA_HOME | default ".local/share"
+    $env | get -o XDG_DATA_HOME | default ".local/share"
   }
 )'
 
