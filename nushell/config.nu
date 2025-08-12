@@ -514,7 +514,7 @@ def df [] {
 }
 
 def msg [msg: string] {
-  $"(ansi ub)::(ansi reset) ($msg)"
+  $"(ansi bb)::(ansi reset) ($msg)"
 }
 
 # Remove cache files for docker, paru, pacman, TODO: and jupyter
