@@ -2,6 +2,7 @@
 
 use scripts/gh-merge-pre-commit.nu
 use scripts/task.nu
+use scripts/completion-yarn.nu
 
 module completions {
   def "nu-complete qdbus6 servicenames" [] {
