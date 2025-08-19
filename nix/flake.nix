@@ -21,9 +21,12 @@
           pkgs.rustup
           pkgs.fnm
           pkgs.pandoc
+          pkgs.biome
           pkgs.delta
           pkgs.jq
           pkgs.pest-ide-tools
+          pkgs.hugo
+          pkgs.hdf5
           pkgs.gitAndTools.gh
           pkgs.git-lfs
           pkgs.cmake
@@ -48,6 +51,8 @@
           pkgs.python3
           pkgs.libcxx
         ];
+
+      system.primaryUser = "philipp.angerer";
 
       # launchd.user.envVariables.PATH = nixpkgs.lib.strings.concatStringsSep ":" ["/usr/local/hatch/bin" config.environment.systemPath];
       launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];

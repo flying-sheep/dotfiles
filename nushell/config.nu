@@ -652,9 +652,9 @@ def 'bombadil watch' [] {
   ^bombadil watch -p $nu.os-info.name
 }
 
-if (which yarn | is-empty) {
-  alias yarn = fnm exec --using v20.2.0 yarn
-}
+#if (which yarn | is-empty) {
+#  alias yarn = fnm exec $"--using=(fnm current)" yarn
+#}
 
 def R [...args] {
   if ($args | is-empty) {
