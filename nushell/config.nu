@@ -677,10 +677,10 @@ alias fuck = with-env {TF_ALIAS: "fuck", PYTHONIOENCODING: "utf-8"} {
 # Execute a closure repeatedly
 def every [duration: duration, closure: closure] {
   0.. | each { |it|
-    let ret = ($it | do $closure $it)
+    let $ret = ($it | do $closure $it)
     sleep $duration
     $ret
-  }
+  } | take until { |e| $e == null }
 }
 
 def cpuinfo [] {
@@ -777,18 +777,17 @@ def 'sphobjinv co json' [
 
 def "torrent list" [] {
   let hashes = (qdbus6 org.kde.ktorrent /core org.ktorrent.core.torrents | lines)
-  let torrents = ($hashes | wrap hash | insert name { |e| (qdbus6 org.kde.ktorrent $"/torrent/($e.hash)" name | str trim) })
-  $torrents | each { |t| { value: ($t.hash | to nuon), description: $t.name } }
+  $hashes | wrap hash | insert name { |e| (qdbus6 org.kde.ktorrent $"/torrent/($e.hash)" name | str trim) }
 }
 
 # Check torrent status
-def "torrent status" [torrent_: string@"torrent list"] {
-  let torrent = if $torrent_ != '' {
+def "torrent status" [torrent_?: string@"torrent list"] {
+  let torrent = if $torrent_ != null {
     $torrent_
   } else {
     let torrents = (torrent list)
     if ($torrents | length) == 1 {
-      $torrents | get 0
+      $torrents | get 0.hash
     } else {
       return (error make { msg: $"There’s not exactly one torrent, but instead the following. Use `torrent-status <hash>` \n($torrents | transpose -rd | table)" })
     }
@@ -799,7 +798,7 @@ def "torrent status" [torrent_: string@"torrent list"] {
   let initial = (qdbus6 org.kde.ktorrent $torrent_arg org.ktorrent.torrent.bytesDownloaded | into int | into filesize)
   every 0.06sec {
     let bytes = (qdbus6 org.kde.ktorrent $torrent_arg org.ktorrent.torrent.bytesDownloaded | into int | into filesize)
-    if $bytes >= $total_bytes { break }
+    if $bytes >= $total_bytes { return null }
     $bytes | into int
   } | to text | tqdm --update_to --unit=B --unit_scale=1 --unit_divisor=1024 --null $'--total=($total_bytes | into int)' $'--initial=($initial | into int)'
 }
