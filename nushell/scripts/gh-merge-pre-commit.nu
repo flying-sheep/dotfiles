@@ -5,7 +5,7 @@ export def main [
   #let pat: string = (keyring get github.com flying-sheep | str trim)
 
   # https://docs.github.com/en/rest/activity/notifications?apiVersion=2022-11-28#list-notifications-for-the-authenticated-user
-  gh api --paginate -X GET notifications -q '[.[] | select(.subject.type == "PullRequest" and .subject.title == "[pre-commit.ci] pre-commit autoupdate")]' | from json --objects | each { |threads|
+  gh api --paginate -X GET notifications -q '[.[] | select(.subject.type == "PullRequest" and (.subject.title | contains("pre-commit autoupdate")))]' | from json --objects | each { |threads|
     # TODO: handle milestones
 
     $threads | par-each --keep-order { |thread|
