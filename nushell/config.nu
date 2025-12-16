@@ -710,14 +710,16 @@ json.dump({k: m.get_all(k) if len(m.get_all(k)) > 1 else m[k] for k in m}, sys.s
 
 def 'pypkg deps' [
   pkg: string
+  --version: string
 ] {
   let info = (
     http get $"https://pypi.org/simple/($pkg)/" --headers [Accept application/vnd.pypi.simple.v1+json]
-    | from json | get files | where not yanked and core-metadata != false
+    | from json | get files | where yanked == false and core-metadata != false
     | each { |info|
       let whl = ($info.filename | parse '{name}-{ver}-{py}-{abi}-{arch}.whl' | into record)
       { ...$info, whl: $whl }
     }
+    | where { |info| $version == null or $info.whl.ver == $version }
     | to json | uv run --with=packaging python -c 'import sys, json, packaging.version; json.dump([e for e in json.load(sys.stdin) if not packaging.version.Version(e["whl"]["ver"]).is_prerelease], sys.stdout)' | from json
     | last
   )
