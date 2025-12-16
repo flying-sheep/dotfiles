@@ -486,7 +486,9 @@ def 'sync-theme' [] {
     'linux' => {
       qdbus6 org.kde.yakuake /yakuake/MainWindow_1 org.kde.yakuake.KMainWindow.setSettingsDirty
       let profile = (if (should-be-dark) { 'Dark' } else { 'Light' })
-      qdbus6 org.kde.yakuake | lines | find -n /Sessions/ | each { qdbus6 org.kde.yakuake $in org.kde.konsole.Session.setProfile $profile }
+      try { # https://bugs.kde.org/show_bug.cgi?id=513428
+        qdbus6 org.kde.yakuake | lines | find -n /Sessions/ | each { qdbus6 org.kde.yakuake $in org.kde.konsole.Session.setProfile $profile }
+      }
     },
     'macos' => {},
   }
