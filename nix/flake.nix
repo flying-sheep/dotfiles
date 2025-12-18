@@ -28,8 +28,9 @@
           pkgs.hugo
           pkgs.hdf5
           pkgs.R
-          pkgs.gitAndTools.gh
+          pkgs.git
           pkgs.git-lfs
+          pkgs.gh
           pkgs.cmake
           pkgs.ocamlPackages.cpdf
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]

@@ -166,8 +166,10 @@ def should-be-dark [] {
 
 let version = ((version).version | parse -r '^(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?$' | transpose name val | update val { |row| $row.val | into int } | transpose -ird)
 
+$env.config.display_errors.exit_code = true
 $env.config.ls.use_ls_colors = true  # use the LS_COLORS environment variable to colorize output
 $env.config.ls.clickable_links = true # enable or disable clickable links. Your terminal has to support links.
+# $env.config.pipefail = true # experimental
 $env.config.rm.always_trash = false  # always act as if -t was given. Can be overridden with -p
 $env.config.table.mode = "rounded"  # basic, compact, compact_double, light, thin, with_love, rounded, reinforced, heavy, none, other
 $env.config.table.index_mode = "always"  # "always" show indexes, "never" show indexes, "auto" = show indexes when a table has "index" column
