@@ -27,6 +27,7 @@
           pkgs.pest-ide-tools
           pkgs.hugo
           pkgs.hdf5
+          pkgs.R
           pkgs.gitAndTools.gh
           pkgs.git-lfs
           pkgs.cmake
@@ -44,6 +45,7 @@
           # system libs
           pkgs.pkg-config
           pkgs.openssl.dev
+          pkgs.libpng.dev
           pkgs.zlib.dev
           pkgs.openblas.dev
           pkgs.libusb1.dev
@@ -55,7 +57,7 @@
       system.primaryUser = "philipp.angerer";
 
       # launchd.user.envVariables.PATH = nixpkgs.lib.strings.concatStringsSep ":" ["/usr/local/hatch/bin" config.environment.systemPath];
-      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];
+      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.libpng.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];
       launchd.user.envVariables.LIBRARY_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib) [pkgs.iconv pkgs.libcxx];
       #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";
 

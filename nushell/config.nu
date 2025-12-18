@@ -1,7 +1,8 @@
 # Nushell Config File
 
 use scripts/gh-merge-pre-commit.nu
-use scripts/task.nu
+# use scripts/task.nu  # should be covered by `job` builtin now?
+use scripts/psub.nu
 use scripts/completion-yarn.nu *
 
 module completions {
