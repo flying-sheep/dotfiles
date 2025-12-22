@@ -27,7 +27,7 @@ def main_job [pipe:path, write:bool, task, cleanup:int] {
       open -r $pipe | do $task
     } else {
       try {
-        job recv | do ($task | default {{||}}) | save --append $pipe
+        job recv | do ($task | default ({||})) | save --append $pipe
       } catch {|err|
         let code = $err.json | from json | get code
         if ($code != "nu::shell::io::broken_pipe") {
