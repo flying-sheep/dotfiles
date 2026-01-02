@@ -728,9 +728,10 @@ def 'pypkg deps' [
     | to json | uv run --with=packaging python -c 'import sys, json, packaging.version; json.dump([e for e in json.load(sys.stdin) if not packaging.version.Version(e["whl"]["ver"]).is_prerelease], sys.stdout)' | from json
     | last
   )
-  let deps = (http get $"($info.url).metadata" | decode utf-8 | email parse | get Requires-Dist | find -vr 'extra ==')
+  let metadata = (http get $"($info.url).metadata" | decode utf-8 | email parse)
+  let deps = ($metadata | get -o Requires-Dist | default [] | find -vr 'extra ==')
 
-  { ...$info.whl, deps: $deps }
+  { ...($metadata | select Name Version Requires-Python), deps: $deps }
 }
 
 def pyprofile [
