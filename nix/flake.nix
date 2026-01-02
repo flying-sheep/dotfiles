@@ -21,6 +21,7 @@
           pkgs.rustup
           pkgs.fnm
           pkgs.pandoc
+          pkgs.tree-sitter
           pkgs.biome
           pkgs.delta
           pkgs.jq
@@ -31,7 +32,10 @@
           pkgs.git
           pkgs.git-lfs
           pkgs.gh
+          pkgs.llvm
+          pkgs.clang
           pkgs.cmake
+          pkgs.binaryen
           pkgs.ocamlPackages.cpdf
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
           pkgs.gfortran
