@@ -15,6 +15,8 @@ vim = { source = "nvim/init.vim", target = ".config/nvim/init.vim" }
 plasma-profile = { source = "env.sh", target = ".config/plasma-workspace/env/env.sh" }
 fontconfig = { source = "fonts.conf", target = ".config/fontconfig/fonts.conf" }
 xcompose = { source = ".XCompose", target = ".XCompose" }
+xkb-rules = {  source = "xkb/rules", target = ".config/xkb/rules" }
+xkb-symbols = {  source = "xkb/symbols", target = ".config/xkb/symbols" }
 cargo-config = { source = "cargo/config.toml", target = ".cargo/config.toml" }
 
 nushell-scripts = { source = "nushell/scripts", target = ".config/nushell/scripts" }
