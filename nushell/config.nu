@@ -724,14 +724,29 @@ def 'pypkg deps' [
       let whl = ($info.filename | parse '{name}-{ver}-{py}-{abi}-{arch}.whl' | into record)
       { ...$info, whl: $whl }
     }
-    | where { |info| $version == null or $info.whl.ver == $version }
-    | to json | uv run --with=packaging python -c 'import sys, json, packaging.version; json.dump([e for e in json.load(sys.stdin) if not packaging.version.Version(e["whl"]["ver"]).is_prerelease], sys.stdout)' | from json
+    | to json | uv run --with=packaging python -c '
+import sys, json
+from packaging.version import Version
+from packaging.specifiers import SpecifierSet, InvalidSpecifier
+
+if spec_str := json.loads(sys.argv[1]):
+  try:
+    test = SpecifierSet(spec_str).contains
+  except InvalidSpecifier:
+    test = SpecifierSet(f"== {spec_str}").contains
+else:
+  test = lambda v: not Version(v).is_prerelease
+json.dump([e for e in json.load(sys.stdin) if test(e["whl"]["ver"])], sys.stdout)
+' ($version | to json) | from json
     | last
   )
+  if ($info | is-empty) {
+    error make { msg: 'No matching package found' }
+  }
   let metadata = (http get $"($info.url).metadata" | decode utf-8 | email parse)
   let deps = ($metadata | get -o Requires-Dist | default [] | find -vr 'extra ==')
 
-  { ...($metadata | select Name Version Requires-Python), deps: $deps }
+  { ...($metadata | select -o Name Version Requires-Python), deps: $deps }
 }
 
 def pyprofile [
