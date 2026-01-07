@@ -46,14 +46,14 @@ export _JAVA_OPTIONS="\
     -Dswing.systemlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel \
     -Djdk.gtk.version=3 \
     -Djayatana.force=true"
-# export GTK_USE_PORTAL=1  # Native file picker for Firefox, but breaks themeing
+export GTK_USE_PORTAL=1  # Native file picker for Firefox
 export MOZ_WEBRENDER='1'
 export MOZ_ENABLE_WAYLAND='1'
 export MOZ_DBUS_REMOTE='1'
 
 # global menus
-export GTK_MODULES=appmenu-gtk-module
-export SAL_USE_VCLPLUGIN=gtk
+#export GTK_MODULES=appmenu-gtk-module
+#export SAL_USE_VCLPLUGIN=gtk
 
 # performance & dev goodies
 export RUSTFLAGS='-C target-cpu=native'
