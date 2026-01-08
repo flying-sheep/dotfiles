@@ -13,7 +13,7 @@ vim = { source = "nvim/init.vim", target = ".config/nvim/init.vim" }
 
 [profiles.linux.dots]
 plasma-profile = { source = "env.sh", target = ".config/plasma-workspace/env/env.sh" }
-fontconfig = { source = "fonts.conf", target = ".config/fontconfig/fonts.conf" }
+fontconfig = { source = "fontconfig", target = ".config/fontconfig" }
 xcompose = { source = ".XCompose", target = ".XCompose" }
 xkb-rules = {  source = "xkb/rules", target = ".config/xkb/rules" }
 xkb-symbols = {  source = "xkb/symbols", target = ".config/xkb/symbols" }
