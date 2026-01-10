@@ -42,8 +42,8 @@ use completions *
 
 # Check if the system should be dark
 def should-be-dark []: nothing -> bool {
-  if ($env | get -o FORCE_DARK | default false) {
-    return true
+  if not ($env | get -o FORCE_THEME | is-empty) {
+    return ($env.FORCE_THEME == 'dark')
   }
   match $nu.os-info.name {
     'linux' => {
@@ -57,8 +57,6 @@ def should-be-dark []: nothing -> bool {
     },
   }
 }
-
-let version = ((version).version | parse -r '^(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?$' | transpose name val | update val { |row| $row.val | into int } | transpose -ird)
 
 $env.config.display_errors.exit_code = true
 $env.config.ls.use_ls_colors = true  # use the LS_COLORS environment variable to colorize output
@@ -169,7 +167,7 @@ $env.config.hooks.pre_prompt = [{ let x = (sync-theme) }]  # no idea why I need 
 $env.config.hooks.display_output = { ||
   if (term size).columns >= 100 { table -e } else { table }
 }
-if not (which pkgfile | is-empty) and ($version.major >= 1 or ($version.major == 0 and $version.minor >= 78)) {
+if not (which pkgfile | is-empty) {
   $env.config.hooks.command_not_found = { |cmd_name: string| (
     try {
       let pkgs = (pkgfile --binaries --verbose $cmd_name)
