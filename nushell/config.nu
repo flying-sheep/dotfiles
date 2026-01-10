@@ -146,11 +146,10 @@ let light_theme = {
 }
 
 # Check if the system should be dark
-def should-be-dark [] {
-  # TODO: update location
-  #do -i {
-  #  PYTHONPATH=/opt/yin-yang python -c 'import src.yin_yang as yy; from datetime import datetime as dt; print(yy.should_be_dark(dt.now().time(), *yy.config.times))'
-  #} | complete | get stdout | into bool
+def should-be-dark []: nothing -> bool {
+  if ($env | get -o FORCE_DARK | default false) {
+    return true
+  }
   match $nu.os-info.name {
     'linux' => {
       let scheme_nr = (qdbus6 org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read "org.freedesktop.appearance" "color-scheme" | into int)
@@ -269,7 +268,7 @@ $env.config.shell_integration.osc633 = true
 $env.config.shell_integration.reset_application_mode = true
 $env.config.show_banner = false
 $env.config.render_right_prompt_on_last_line = false  # true or false to enable or disable right prompt to be rendered on last line of the prompt.
-#$env.config.hooks.pre_prompt = [{ || ... }]
+$env.config.hooks.pre_prompt = [{ let x = (sync-theme) }]  # no idea why I need this to have it run
 #$env.config.hooks.pre_execution = [{ || ... }]
 #$env.config.hooks.env_change.PWD = [{ |before, after| ... }]  # # runs if the PWD environment is different since the last repl input
 $env.config.hooks.display_output = { ||
@@ -479,25 +478,27 @@ $env.config.keybindings = [
   }
 ]
 
-def 'sync-theme' [] {
-  $env.COLOR_SCHEME = (if (should-be-dark) { 'dark' } else { 'light' })
+def --env sync-theme [] {
+  let $dark = (should-be-dark)
+
+  $env.COLOR_SCHEME = (if $dark { 'dark' } else { 'light' })
   $env.CLIPBOARD_THEME = $env.COLOR_SCHEME
 
-  $env.config.color_config = (if (should-be-dark) { $dark_theme } else { $light_theme })
+  $env.config.color_config = (if $dark { $dark_theme } else { $light_theme })
 
   match $nu.os-info.name {
     'linux' => {
+      # Use workaround if this fails: https://bugs.kde.org/show_bug.cgi?id=513428 https://invent.kde.org/utilities/konsole/-/merge_requests/1123#note_1374319
+      # kwriteconfig6 --file yakuakerc --group KonsoleWindow --type bool --key EnableSecuritySensitiveDBusAPI true
       qdbus6 org.kde.yakuake /yakuake/MainWindow_1 org.kde.yakuake.KMainWindow.setSettingsDirty
-      let profile = (if (should-be-dark) { 'Dark' } else { 'Light' })
-      try { # https://bugs.kde.org/show_bug.cgi?id=513428
+      let profile = (if $dark { 'Dark' } else { 'Light' })
+      try {
         qdbus6 org.kde.yakuake | lines | find -n /Sessions/ | each { qdbus6 org.kde.yakuake $in org.kde.konsole.Session.setProfile $profile }
       }
     },
     'macos' => {},
   }
 }
-
-sync-theme
 
 def 'into filesize2' [...cols] {
   let start = $in
