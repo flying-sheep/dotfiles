@@ -1,5 +1,8 @@
 # Nushell Config File
 
+use std/config light-theme
+use std/config dark-theme
+
 use scripts/gh-merge-pre-commit.nu
 # use scripts/task.nu  # should be covered by `job` builtin now?
 use scripts/psub.nu
@@ -36,114 +39,6 @@ module completions {
   ]
 }
 use completions *
-
-# for more information on themes see
-# https://www.nushell.sh/book/coloring_and_theming.html
-let dark_theme = {
-    # color for nushell primitives
-    separator: white
-    leading_trailing_space_bg: { attr: n } # no fg, no bg, attr none effectively turns this off
-    header: green_bold
-    empty: blue
-    bool: white
-    int: white
-    filesize: white
-    duration: white
-    date: white
-    range: white
-    float: white
-    string: white
-    nothing: white
-    binary: white
-    cellpath: white
-    row_index: green_bold
-    record: white
-    list: white
-    block: white
-    hints: dark_gray
-
-    # shapes are used to change the cli syntax highlighting
-    shape_garbage: { fg: "#FFFFFF" bg: "#FF0000" attr: b}
-    shape_binary: purple_bold
-    shape_bool: light_cyan
-    shape_int: purple_bold
-    shape_float: purple_bold
-    shape_range: yellow_bold
-    shape_internalcall: cyan_bold
-    shape_external: cyan
-    shape_externalarg: green_bold
-    shape_literal: blue
-    shape_operator: yellow
-    shape_signature: green_bold
-    shape_string: green
-    shape_string_interpolation: cyan_bold
-    shape_datetime: cyan_bold
-    shape_list: cyan_bold
-    shape_table: blue_bold
-    shape_record: cyan_bold
-    shape_block: blue_bold
-    shape_filepath: cyan
-    shape_directory: cyan
-    shape_globpattern: cyan_bold
-    shape_variable: purple
-    shape_flag: blue_bold
-    shape_custom: green
-    shape_nothing: light_cyan
-    shape_matching_brackets: { attr: u }
-}
-
-let light_theme = {
-    # color for nushell primitives
-    separator: dark_gray
-    leading_trailing_space_bg: { attr: n } # no fg, no bg, attr none effectively turns this off
-    header: green_bold
-    empty: blue
-    bool: dark_gray
-    int: dark_gray
-    filesize: dark_gray
-    duration: dark_gray
-    date: dark_gray
-    range: dark_gray
-    float: dark_gray
-    string: dark_gray
-    nothing: dark_gray
-    binary: dark_gray
-    cellpath: dark_gray
-    row_index: green_bold
-    record: white
-    list: white
-    block: white
-    hints: dark_gray
-
-    # shapes are used to change the cli syntax highlighting
-    shape_garbage: { fg: "#FFFFFF" bg: "#FF0000" attr: b}
-    shape_binary: purple_bold
-    shape_bool: light_cyan
-    shape_int: purple_bold
-    shape_float: purple_bold
-    shape_range: yellow_bold
-    shape_internalcall: cyan_bold
-    shape_external: cyan
-    shape_externalarg: green_bold
-    shape_literal: blue
-    shape_operator: yellow
-    shape_signature: green_bold
-    shape_string: green
-    shape_string_interpolation: cyan_bold
-    shape_datetime: cyan_bold
-    shape_list: cyan_bold
-    shape_table: blue_bold
-    shape_record: cyan_bold
-    shape_block: blue_bold
-    shape_filepath: cyan
-    shape_directory: cyan
-    shape_globpattern: cyan_bold
-    shape_variable: purple
-    shape_flag: blue_bold
-    shape_custom: green
-    shape_nothing: light_cyan
-    shape_matching_brackets: { attr: u }
-}
 
 # Check if the system should be dark
 def should-be-dark []: nothing -> bool {
@@ -234,7 +129,7 @@ $env.config.filesize.unit = "metric"
 # The number of digits to display after the decimal point for file sizes.
 # When set to `null`, all digits after the decimal point will be displayed.
 $env.config.filesize.precision = 1
-$env.config.color_config = (if (should-be-dark) { $dark_theme } else { $light_theme })
+$env.config.color_config = (if (should-be-dark) { dark-theme } else { light-theme })
 $env.config.footer_mode = 25  # always, never, number_of_rows, auto
 $env.config.float_precision = 2
 # $env.config.buffer_editor: "emacs"  # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL
@@ -484,7 +379,7 @@ def --env sync-theme [] {
   $env.COLOR_SCHEME = (if $dark { 'dark' } else { 'light' })
   $env.CLIPBOARD_THEME = $env.COLOR_SCHEME
 
-  $env.config.color_config = (if $dark { $dark_theme } else { $light_theme })
+  $env.config.color_config = (if $dark { dark-theme } else { light-theme })
 
   match $nu.os-info.name {
     'linux' => {
