@@ -403,8 +403,7 @@ def 'into filesize2' [...cols] {
 }
 
 def ports [] {
-  let $raw = (^sudo lsof -nP -iTCP -sTCP:LISTEN | ^column -t | from ssv)
-  $raw # | rename ($raw | columns) ($raw | columns | lowercase)
+  ^sudo lsof -nP -iTCP -sTCP:LISTEN | ^column -t | from ssv | rename ...($in | columns | str downcase)
 }
 
 # Free disk space information
@@ -419,18 +418,18 @@ def msg [msg: string] {
 
 # Remove cache files for docker, paru, pacman, TODO: and jupyter
 def gc [] {
-  print (msg 'Pruning Docker')
+  msg 'Pruning Docker' | print
   docker system prune
-  print (msg 'Removing unneeded dependencies')
+  msg 'Removing unneeded dependencies' | print
   paru -Qdtq | lines | do { || let pkgs = $in; if not ($pkgs | is-empty) { paru -Rcns ...$pkgs } }
-  print (msg 'Cleaning PKGBUILD dirs')
+  msg 'Cleaning PKGBUILD dirs' | print
   for dir in ([
     (ls ~/.cache/paru/clone/* | get name),
     (ls ~/Dev/PKGBUILDs/checkouts/*/* | get name),
   ] | flatten) { do -i { ^git -C $dir clean -fx } }
-  print (msg 'Pruning package cache')
+  msg 'Pruning package cache' | print
   ^sudo pacman -Sc
-  print (msg 'Uninstalling old Rust toolchains')
+  msg 'Uninstalling old Rust toolchains' | print
   rustup toolchain list | lines | str replace ' (default)' '' | where $it =~ '^\d+[.]\d+|^nightly-\d{4}' | each { |tc| rustup toolchain uninstall $tc }
   null
 }
@@ -611,14 +610,7 @@ def 'pypkg deps' [
   pkg: string
   --version: string
 ] {
-  let info = (
-    http get $"https://pypi.org/simple/($pkg)/" --headers [Accept application/vnd.pypi.simple.v1+json]
-    | from json | get files | where yanked == false and core-metadata != false
-    | each { |info|
-      let whl = ($info.filename | parse '{name}-{ver}-{py}-{abi}-{arch}.whl' | into record)
-      { ...$info, whl: $whl }
-    }
-    | to json | uv run --with=packaging python -c '
+  let code = '
 import sys, json
 from packaging.version import Version
 from packaging.specifiers import SpecifierSet, InvalidSpecifier
@@ -631,7 +623,16 @@ if spec_str := json.loads(sys.argv[1]):
 else:
   test = lambda v: not Version(v).is_prerelease
 json.dump([e for e in json.load(sys.stdin) if test(e["whl"]["ver"])], sys.stdout)
-' ($version | to json) | from json
+'
+
+  let info = (
+    http get $"https://pypi.org/simple/($pkg)/" --headers [Accept application/vnd.pypi.simple.v1+json]
+    | from json | get files | where yanked == false and core-metadata != false
+    | each { |info|
+      let whl = ($info.filename | parse '{name}-{ver}-{py}-{abi}-{arch}.whl' | into record)
+      { ...$info, whl: $whl }
+    }
+    | to json | uv run --with=packaging python -c $code ($version | to json) | from json
     | last
   )
   if ($info | is-empty) {
@@ -667,7 +668,7 @@ def pyprofile [
   unlink $tmp
 }
 
-def 'hatch env find' [search: string] {
+def 'hatch env find' [search: string = 'default'] {
   ^hatch env find $search | lines | each { |path|
     let exists = try { ls -D $path; true } catch { false }
     if $exists {
