@@ -382,12 +382,10 @@ def --env sync-theme [] {
   match $nu.os-info.name {
     'linux' => {
       # Use workaround if this fails: https://bugs.kde.org/show_bug.cgi?id=513428 https://invent.kde.org/utilities/konsole/-/merge_requests/1123#note_1374319
-      # kwriteconfig6 --file yakuakerc --group KonsoleWindow --type bool --key EnableSecuritySensitiveDBusAPI true
+      kwriteconfig6 --file konsolerc --group KonsoleWindow --type bool --key EnableSecuritySensitiveDBusAPI true
       qdbus6 org.kde.yakuake /yakuake/MainWindow_1 org.kde.yakuake.KMainWindow.setSettingsDirty
       let profile = (if $dark { 'Dark' } else { 'Light' })
-      try {
-        qdbus6 org.kde.yakuake | lines | find -n /Sessions/ | each { qdbus6 org.kde.yakuake $in org.kde.konsole.Session.setProfile $profile }
-      }
+      qdbus6 org.kde.yakuake | lines | find -n /Sessions/ | each { qdbus6 org.kde.yakuake $in org.kde.konsole.Session.setProfile $profile }
     },
     'macos' => {},
   }
