@@ -434,7 +434,7 @@ def gc [] {
 
 # Clone AUR repo via SSH URL
 def 'aur clone' [repo: string] {
-  git clone $'ssh://aur@aur.archlinux.org/($repo).git'
+  git -c init.defaultBranch=master clone $'ssh://aur@aur.archlinux.org/($repo).git'
 }
 
 def pacq [
