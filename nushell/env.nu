@@ -55,6 +55,11 @@ $env.NU_PLUGIN_DIRS = [
   ($'($env.HOME)/.cargo/bin'),
 ]
 
+$env.XDG_DATA_DIRS = (
+  $env | get XDG_DATA_DIRS | default '/usr/local/share:/usr/share' | split row :
+  | prepend $'($env.HOME)/.local/share/flatpak/exports/share' | str join :
+)
+
 let data_dir = $'($env.HOME)/(
   if $nu.os-info.name == 'macos' {
     "Library/Application Support"
@@ -115,7 +120,9 @@ $env.PNPM_HOME = $'($env.HOME)/.local/bin'
 # TODO remove, is part of plasmashell env
 # $env.PASSWORD_STORE_DIR = $env | get -i XDG_DATA_HOME | default $'($env.HOME)/.local/share' | path join password-store
 
+# Verbosity
 $env.VIRTUAL_ENV_DISABLE_PROMPT = true
+$env.RUSTUP_LOG = 'warn'
 
 mkdir ~/.cache/starship
 starship init nu | save -f ~/.cache/starship/init.nu
