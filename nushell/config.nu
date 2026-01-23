@@ -2,6 +2,7 @@
 
 use std/config light-theme
 use std/config dark-theme
+use std/config env-conversions
 
 use scripts/gh-merge-pre-commit.nu
 # use scripts/task.nu  # should be covered by `job` builtin now?
@@ -163,7 +164,12 @@ $env.config.show_banner = false
 $env.config.render_right_prompt_on_last_line = false  # true or false to enable or disable right prompt to be rendered on last line of the prompt.
 $env.config.hooks.pre_prompt = [{ let x = (sync-theme) }]  # no idea why I need this to have it run
 #$env.config.hooks.pre_execution = [{ || ... }]
-#$env.config.hooks.env_change.PWD = [{ |before, after| ... }]  # # runs if the PWD environment is different since the last repl input
+$env.config.hooks.env_change.PWD = [{ |before, after|
+  if (which direnv | is-empty) { return }
+  direnv export json | from json | default {} | load-env
+  # If direnv changes the PATH, it will become a string and we need to re-convert it to a list
+  $env.PATH = do (env-conversions).path.from_string $env.PATH
+}]
 $env.config.hooks.display_output = { ||
   if (term size).columns >= 100 { table -e } else { table }
 }
@@ -606,7 +612,7 @@ json.dump({k: m.get_all(k) if len(m.get_all(k)) > 1 else m[k] for k in m}, sys.s
 
 def 'pypkg deps' [
   pkg: string
-  --version: string
+  --version (-v): string
 ] {
   let code = '
 import sys, json
