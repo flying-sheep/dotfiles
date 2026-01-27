@@ -16,7 +16,7 @@ export def main [
         gh api $"repos/($pr.head.repo.full_name)/commits/($pr.head.sha)/check-runs"
         | from json
         | get check_runs
-        | where { |run| $run.conclusion in ["failure", "cancelled", "skipped", "timed_out", "action_required", null] }
+        | where { |run| $run.conclusion in ["failure", "cancelled", "timed_out", "action_required", null] }
       )
       let failed_statuses = (
         gh api $"repos/($pr.head.repo.full_name)/commits/($pr.head.sha)/status"
@@ -34,9 +34,7 @@ export def main [
         return $skip_resp
       }
       # Do stuff (or not if -n is passed)
-      let pr = if $dry_run {
-        $"Would merge ($desc)"
-      } else {
+      if not $dry_run {
         gh api -X PUT -F merge_method=squash $"($pr.url)/merge" | from json
       }
       let note = if $dry_run {
@@ -44,7 +42,7 @@ export def main [
       } else {
         gh api -X PATCH $thread.url | from json
       }
-      { pr: $pr, note: $note }
+      { pr: $desc, note: $note }
     }
   } | flatten
 }
