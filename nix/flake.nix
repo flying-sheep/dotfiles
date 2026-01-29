@@ -41,6 +41,7 @@
           pkgs.gfortran
           pkgs.just
           pkgs.awscli2
+          pkgs.opentofu
           pkgs._1password-cli
           #pkgs._1password-gui
           # package/tool managers
