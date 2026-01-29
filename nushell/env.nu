@@ -55,10 +55,13 @@ $env.NU_PLUGIN_DIRS = [
   ($'($env.HOME)/.cargo/bin'),
 ]
 
-$env.XDG_DATA_DIRS = (
-  $env | get XDG_DATA_DIRS | default '/usr/local/share:/usr/share' | split row :
-  | prepend $'($env.HOME)/.local/share/flatpak/exports/share' | str join :
-)
+if $nu.os-info.name == 'linux' {
+  # stop flatpak from complaining
+  $env.XDG_DATA_DIRS = (
+    $env | get -o XDG_DATA_DIRS | default '/usr/local/share:/usr/share' | split row :
+    | prepend $'($env.HOME)/.local/share/flatpak/exports/share' | str join :
+  )
+}
 
 let data_dir = $'($env.HOME)/(
   if $nu.os-info.name == 'macos' {
