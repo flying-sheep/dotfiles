@@ -40,6 +40,7 @@
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
           pkgs.gfortran
           pkgs.just
+          pkgs.awscli2
           pkgs._1password-cli
           #pkgs._1password-gui
           # package/tool managers
