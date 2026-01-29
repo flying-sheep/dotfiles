@@ -43,6 +43,7 @@
           #pkgs._1password
           #pkgs._1password-gui
           # package/tool managers
+          pkgs.direnv
           pkgs.pipx
           pkgs.pixi
           pkgs.cargo-generate
