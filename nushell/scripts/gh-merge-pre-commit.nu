@@ -28,6 +28,7 @@ export def main [
       mut skip_resp = { pr: $"Skipped ($desc)", note: $"Skipped notification “($thread.subject.title)”" }
 
       if $pr.changed_files != 1 or not ($pr.mergeable | default false) {
+        $skip_resp.pr = $"Skipped ($desc) because mergeable = ($pr.mergeable) and # changed files = ($pr.changed_files)"
         return $skip_resp
       } else if not ($failed | is-empty) {
         $skip_resp.pr = $"Skipped ($desc) because of failing checks/statuses: ($failed)"
