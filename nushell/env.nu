@@ -125,7 +125,7 @@ $env.PNPM_HOME = $'($env.HOME)/.local/bin'
 
 # Verbosity
 $env.VIRTUAL_ENV_DISABLE_PROMPT = true
-$env.RUSTUP_LOG = 'warn'
+#$env.RUSTUP_LOG = 'warn'
 
 mkdir ~/.cache/starship
 starship init nu | save -f ~/.cache/starship/init.nu

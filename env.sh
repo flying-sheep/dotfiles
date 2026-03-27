@@ -64,6 +64,7 @@ export DOCKER_BUILDKIT='1'
 
 # ConTeXt
 #test -f /opt/context-minimals/setuptex && source /opt/context-minimals/setuptex
+export TEXMFCNF=/opt/context-lmtx/texmf/web2c # for bibtool
 export DIGESTIF_TEXMF=/opt/context-lmtx
 
 # Fixup

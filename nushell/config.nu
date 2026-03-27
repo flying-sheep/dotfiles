@@ -171,7 +171,7 @@ $env.config.hooks.env_change.PWD = [{ |before, after|
   $env.PATH = do (env-conversions).path.from_string $env.PATH
 }]
 $env.config.hooks.display_output = { ||
-  if (term size).columns >= 100 { table -e } else { table }
+  if (term size).columns >= 100 { table -e --icons } else { table }
 }
 if not (which pkgfile | is-empty) {
   $env.config.hooks.command_not_found = { |cmd_name: string| (
