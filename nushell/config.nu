@@ -48,6 +48,7 @@ def should-be-dark []: nothing -> bool {
   }
   match $nu.os-info.name {
     'linux' => {
+      return false  # https://gitlab.archlinux.org/archlinux/packaging/packages/qt6-tools/-/work_items/4
       let scheme_nr = (qdbus6 org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read "org.freedesktop.appearance" "color-scheme" | into int)
       return ($scheme_nr == 1)  # light: 2, no pref: 0
     },
@@ -387,6 +388,7 @@ def --env sync-theme [] {
 
   match $nu.os-info.name {
     'linux' => {
+      return # https://gitlab.archlinux.org/archlinux/packaging/packages/qt6-tools/-/work_items/4
       # Use workaround if this fails: https://bugs.kde.org/show_bug.cgi?id=513428 https://invent.kde.org/utilities/konsole/-/merge_requests/1123#note_1374319
       kwriteconfig6 --file konsolerc --group KonsoleWindow --type bool --key EnableSecuritySensitiveDBusAPI true
       qdbus6 org.kde.yakuake /yakuake/MainWindow_1 org.kde.yakuake.KMainWindow.setSettingsDirty

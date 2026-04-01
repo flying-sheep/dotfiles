@@ -94,7 +94,7 @@ if not (which fnm | is-empty) {
 #TODO don’t overwrite PATH here
 if ('/opt/context-lmtx/setuptex' | path exists) {
   load-env (
-    bash -c ". /opt/context-lmtx/setuptex; jq -n '$ENV'"
+    bash -c ". /opt/context-lmtx/setuptex; jaq -n '$ENV'"
     | from json
     | transpose var val
     | where var in (
