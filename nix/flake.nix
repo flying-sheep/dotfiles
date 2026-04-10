@@ -19,6 +19,7 @@
           pkgs.starship
           pkgs.carapace
           pkgs.rustup
+          pkgs.fd
           pkgs.fnm
           pkgs.pandoc
           pkgs.tree-sitter
@@ -44,6 +45,7 @@
           pkgs.opentofu
           pkgs._1password-cli
           #pkgs._1password-gui
+          pkgs.claude-code
           # package/tool managers
           pkgs.direnv
           pkgs.pipx
