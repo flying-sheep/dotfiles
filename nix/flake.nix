@@ -33,11 +33,14 @@
           pkgs.git
           pkgs.git-lfs
           pkgs.gh
+          pkgs.mob
           pkgs.llvm
           pkgs.clang
           pkgs.cmake
           pkgs.binaryen
           pkgs.ocamlPackages.cpdf
+          pkgs.yt-dlp
+          pkgs.deno
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
           pkgs.gfortran
           pkgs.just
