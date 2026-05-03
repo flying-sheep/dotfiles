@@ -40,6 +40,7 @@
           pkgs.binaryen
           pkgs.ocamlPackages.cpdf
           pkgs.yt-dlp
+          pkgs.ffmpeg
           pkgs.deno
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
           pkgs.gfortran
