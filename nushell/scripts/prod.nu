@@ -1,6 +1,8 @@
 use std/assert
 use std/testing *
 
+# Given a record of lists, this streams out a table with all possible combinations
+@example "" { {c: [r g b] b: [0 1]} | prod } --result [[c b]; [r 0] [r 1] [g 0] [g 1] [b 0] [b 1]]
 export def main []: record -> table {
   transpose name items
   | reduce --fold ({|| }) {|source prev_fn|
@@ -18,7 +20,7 @@ export def main []: record -> table {
 }
 
 @test
-def "streaming-record-prod test" [] {
+def "prod test" [] {
   let got = {
     color: [red, green]
     size: [small, large]
