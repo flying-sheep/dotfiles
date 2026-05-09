@@ -6,6 +6,7 @@ use std/config env-conversions
 
 use scripts/gh-merge-pre-commit.nu
 # use scripts/task.nu  # should be covered by `job` builtin now?
+use scripts/prod.nu
 use scripts/psub.nu
 use scripts/completion-yarn.nu *
 
