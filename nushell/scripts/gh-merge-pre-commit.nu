@@ -36,12 +36,12 @@ export def main [
       }
       # Do stuff (or not if -n is passed)
       if not $dry_run {
-        gh api -X PUT -F merge_method=squash $"($pr.url)/merge" | from json
+        do -i { gh api -X PUT -F merge_method=squash $"($pr.url)/merge" | from json }
       }
       let note = if $dry_run {
         $"Would mark notification as read: “($thread.subject.title)”"
       } else {
-        gh api -X PATCH $thread.url | from json
+        try { gh api -X PATCH $thread.url | from json } catch { |e| $"Failed marking as read: ($e)" }
       }
       { pr: $desc, note: $note }
     }
