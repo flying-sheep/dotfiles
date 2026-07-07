@@ -408,7 +408,7 @@ def 'into filesize2' [...cols] {
 }
 
 def ports [] {
-  ^sudo lsof -nP -iTCP -sTCP:LISTEN | ^column -t | from ssv | rename ...($in | columns | str downcase)
+  ^sudo lsof -nP -iTCP -sTCP:LISTEN | ^column -t | from ssv | rename ...($in | columns | str lowercase)
 }
 
 # Free disk space information
