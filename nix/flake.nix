@@ -18,6 +18,7 @@
         [ pkgs.nushell
           pkgs.starship
           pkgs.carapace
+          pkgs.fish  # for nushell completion
           pkgs.rustup
           pkgs.fd
           pkgs.fnm
