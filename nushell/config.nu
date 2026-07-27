@@ -91,7 +91,8 @@ let fish_completer = { |spans: list<string>|
 $env.config.completions.case_sensitive = false  # set to true to enable case-sensitive completions
 $env.config.completions.quick = true  # set this to false to prevent auto-selecting completions when only one remains
 $env.config.completions.partial = true  # set this to false to prevent partial filling of the prompt
-$env.config.completions.algorithm = "fuzzy"  # 'prefix', 'substring', or 'fuzzy'
+# https://github.com/nushell/nushell/issues/11211
+$env.config.completions.algorithm = "substring"  # 'prefix', 'substring', or 'fuzzy'
 $env.config.completions.external.enable = true  # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up my be very slow
 $env.config.completions.external.max_results = 100  # setting it lower can improve completion performance at the cost of omitting some options
 $env.config.completions.external.completer = {|spans|

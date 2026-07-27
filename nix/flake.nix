@@ -25,7 +25,7 @@
           pkgs.tree-sitter
           pkgs.biome
           pkgs.delta
-          pkgs.jq
+          pkgs.jaq
           pkgs.pest-ide-tools
           pkgs.hugo
           pkgs.hdf5
@@ -45,6 +45,7 @@
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
           pkgs.gfortran
           pkgs.just
+          pkgs.curl
           pkgs.awscli2
           pkgs.opentofu
           pkgs._1password-cli
