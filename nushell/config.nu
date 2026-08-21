@@ -78,7 +78,9 @@ $env.config.history.file_format = "plaintext"  # "sqlite" or "plaintext"
 let carapace_completer = { |spans: list<string>|
   carapace $spans.0 nushell ...$spans
   | from json
-  | if ($in | default [] | where value == $"($spans | last)ERR" | is-empty) { $in } else { null }
+  | default []
+  # null falls back to nushell’s file completion (e.g. `hatch test <tab>`)
+  | if ($in | is-empty) or ($in | any {|c| $c.value == $"($spans | last)ERR"}) { null } else { $in }
 }
 let fish_completer = { |spans: list<string>|
   fish --command $"complete '--do-complete=($spans | str join ' ')'"
