@@ -565,7 +565,7 @@ def R [...args] {
   if ($args | is-empty) {
     ^jupyter console --kernel=ir
   } else {
-    ^R $args
+    ^R ...$args
   }
 }
 
