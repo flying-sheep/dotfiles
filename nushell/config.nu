@@ -428,11 +428,11 @@ def gc [] {
   msg 'Pruning Docker' | print
   docker system prune
   msg 'Removing unneeded dependencies' | print
-  paru -Qdtq | lines | do { || let pkgs = $in; if not ($pkgs | is-empty) { paru -Rcns ...$pkgs } }
+  do -i { paru -Qdtq | lines } | do { || let pkgs = $in; if not ($pkgs | is-empty) { paru -Rcns ...$pkgs } }
   msg 'Cleaning PKGBUILD dirs' | print
   for dir in ([
     (ls ~/.cache/paru/clone/* | get name),
-    (ls ~/Dev/PKGBUILDs/checkouts/*/* | get name),
+    (ls ~/Projekte/PKGBUILDs/checkouts/*/* | get name),
   ] | flatten) { do -i { ^git -C $dir clean -fx } }
   msg 'Pruning package cache' | print
   ^sudo pacman -Sc

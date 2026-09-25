@@ -1,8 +1,7 @@
 # shellcheck shell=bash
 export DEFAULT_USER=$(whoami)
 
-typeset -U path  # unique entries
-path=("$HOME/bin" "$HOME/.cargo/bin" $path "$HOME/.local/bin")
+export PATH="$HOME/bin:$HOME/.cargo/bin:$PATH:$HOME/.local/bin"
 
 # Application choices
 if test -f /usr/bin/ksshaskpass; then
