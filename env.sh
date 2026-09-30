@@ -58,7 +58,7 @@ export MOZ_DBUS_REMOTE='1'
 export KWIN_WAYLAND_SUPPORT_XX_PIP_V1=1
 
 # performance & dev goodies
-export RUSTFLAGS='-C target-cpu=native'
+# export RUSTFLAGS='-C target-cpu=native'
 export DOCKER_BUILDKIT='1'
 
 # ConTeXt
