@@ -75,15 +75,15 @@ $env.config.history.sync_on_enter = true # Enable to share the history between m
 $env.config.history.file_format = "plaintext"  # "sqlite" or "plaintext"
 
 # https://www.nushell.sh/cookbook/external_completers.html
-let carapace_completer = { |spans: list<string>|
-  carapace $spans.0 nushell ...$spans
+let carapace_completer = { |place: list<string>|
+  carapace $place.command.0 nushell ...$place.command
   | from json
   | default []
   # null falls back to nushell’s file completion (e.g. `hatch test <tab>`)
-  | if ($in | is-empty) or ($in | any {|c| $c.value == $"($spans | last)ERR"}) { null } else { $in }
+  | if ($in | is-empty) or ($in | any {|c| $c.value == $"($place.command | last)ERR"}) { null } else { $in }
 }
-let fish_completer = { |spans: list<string>|
-  fish --command $"complete '--do-complete=($spans | str join ' ')'"
+let fish_completer = { |place: list<string>|
+  fish --command $"complete '--do-complete=($place.command | str join ' ')'"
   | from tsv --flexible --noheaders --no-infer
   | rename value description
   | update value {
@@ -96,20 +96,22 @@ $env.config.completions.partial = true  # set this to false to prevent partial f
 $env.config.completions.algorithm = "fuzzy"  # 'prefix', 'substring', or 'fuzzy'
 $env.config.completions.external.enable = true  # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up my be very slow
 $env.config.completions.external.max_results = 100  # setting it lower can improve completion performance at the cost of omitting some options
-$env.config.completions.external.completer = {|spans|
+$env.config.completions.external.completer = {|place|
   let expanded_alias = scope aliases
-  | where name == $spans.0
+  | where name == $place.command.0
   | get -o 0.expansion
 
-  let spans = if $expanded_alias != null {
-    $spans
-    | skip 1
-    | prepend ($expanded_alias | split row ' ' | take 1)
-  } else {
-    $spans
+  let place = {
+    command: (if $expanded_alias != null {
+      $place.command
+      | skip 1
+      | prepend ($expanded_alias | split row ' ' | take 1)
+    } else {
+      $place.command
+    })
   }
 
-  match $spans.0 {
+  match $place.command.0 {
     # carapace completions are incorrect for nu
     nu => $fish_completer
     # fish completes commits and branch names in a nicer way
@@ -119,7 +121,7 @@ $env.config.completions.external.completer = {|spans|
     # use zoxide completions for zoxide commands
     #__zoxide_z | __zoxide_zi => $zoxide_completer
     _ => $carapace_completer
-  } | do $in $spans
+  } | do $in $place
 }
 
 # - A filesize unit: "B", "kB", "KiB", "MB", "MiB", "GB", "GiB", "TB", "TiB", "PB", "PiB", "EB", or "EiB".
