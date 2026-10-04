@@ -75,14 +75,14 @@ $env.config.history.sync_on_enter = true # Enable to share the history between m
 $env.config.history.file_format = "plaintext"  # "sqlite" or "plaintext"
 
 # https://www.nushell.sh/cookbook/external_completers.html
-let carapace_completer = { |place: list<string>|
+let carapace_completer = { |place: record<command: list<string>>|
   carapace $place.command.0 nushell ...$place.command
   | from json
   | default []
   # null falls back to nushell’s file completion (e.g. `hatch test <tab>`)
   | if ($in | is-empty) or ($in | any {|c| $c.value == $"($place.command | last)ERR"}) { null } else { $in }
 }
-let fish_completer = { |place: list<string>|
+let fish_completer = { |place: record<command: list<string>>|
   fish --command $"complete '--do-complete=($place.command | str join ' ')'"
   | from tsv --flexible --noheaders --no-infer
   | rename value description
@@ -96,7 +96,7 @@ $env.config.completions.partial = true  # set this to false to prevent partial f
 $env.config.completions.algorithm = "fuzzy"  # 'prefix', 'substring', or 'fuzzy'
 $env.config.completions.external.enable = true  # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up my be very slow
 $env.config.completions.external.max_results = 100  # setting it lower can improve completion performance at the cost of omitting some options
-$env.config.completions.external.completer = {|place|
+$env.config.completions.external.completer = {|place: record<command: list<string>>|
   let expanded_alias = scope aliases
   | where name == $place.command.0
   | get -o 0.expansion
