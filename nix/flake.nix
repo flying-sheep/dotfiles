@@ -43,12 +43,14 @@
           pkgs.yt-dlp
           pkgs.ffmpeg
           pkgs.deno
-          # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']]
+          # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']
           pkgs.gfortran
           pkgs.just
           pkgs.curl
+          pkgs.grpc-tools
           pkgs.awscli2
           pkgs.opentofu
+          pkgs.topgrade
           pkgs._1password-cli
           #pkgs._1password-gui
           pkgs.claude-code
