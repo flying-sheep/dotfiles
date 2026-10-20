@@ -43,6 +43,7 @@
           pkgs.yt-dlp
           pkgs.ffmpeg
           pkgs.deno
+          pkgs.espflash
           # ['gfortran'], ['flang'], ['nvfortran'], ['pgfortran'], ['ifort'], ['ifx'], ['g95']
           pkgs.gfortran
           pkgs.just
