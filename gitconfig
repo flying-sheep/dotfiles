@@ -13,7 +13,7 @@
 	default = simple
   autoSetupRemote = true
 [pull]
-	rebase = true
+	rebase = merges
 [rebase]
 	autoStash = true
 
