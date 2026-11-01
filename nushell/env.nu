@@ -119,7 +119,8 @@ $env.DOCKER_BUILDKIT = '1'
 
 # On systems where a global `pip` exists and the Python install isn’t marked as external, I want this:
 # $env.PIP_REQUIRE_VIRTUALENV = 'true'
-$env.PNPM_HOME = $'($env.HOME)/.local/bin'
+$env.PNPM_HOME = $'($env.HOME)/.local/share/pnpm'
+$env.PATH = ($env.PATH | prepend ($env.PNPM_HOME | path join bin))
 # TODO remove, is part of plasmashell env
 # $env.PASSWORD_STORE_DIR = $env | get -i XDG_DATA_HOME | default $'($env.HOME)/.local/share' | path join password-store
 
