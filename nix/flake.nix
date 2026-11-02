@@ -59,6 +59,7 @@
           pkgs.direnv
           pkgs.pipx
           pkgs.pixi
+          pkgs.cargo-update
           pkgs.cargo-generate
           pkgs.cargo-leptos
           # system libs
