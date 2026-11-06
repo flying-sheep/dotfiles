@@ -25,21 +25,32 @@ export def main [
         | where { |status| $status.state in ["error", "failure"] }
       )
       let failed = [...($failed_checks | get name) ...($failed_statuses | get context)]
-      if $pr.changed_files != 1 or not ($pr.mergeable | default false) {
+      # allow one manifest + its lockfile (e.g. package.json + pnpm-lock.yaml)
+      let only_lockfile_extra = $pr.changed_files == 2 and (
+        gh api $"($pr.url)/files" | from json | get filename | path basename
+        | where $it =~ '(\.lockb?|-lock\.(json|ya?ml)|^go\.sum|^pylock(\.[^.]+)?\.toml)$' | length
+      ) == 1
+      # mergeable = null means GitHub is still computing it, so try anyway
+      if not ($pr.changed_files == 1 or $only_lockfile_extra) or $pr.mergeable == false {
         return { pr: $desc, note: $"Skipped: mergeable = ($pr.mergeable), # changed files = ($pr.changed_files)" }
       } else if not ($failed | is-empty) {
         return { pr: $desc, note: $"Skipped: failing checks/statuses: ($failed)" }
       }
       # Do stuff (or not if -n is passed)
-      if not $dry_run {
-        do -i { gh api -X PUT -F merge_method=squash $"($pr.url)/merge" | from json }
+      if $dry_run {
+        return { pr: $desc, note: $"Would merge and mark notification as read: “($thread.subject.title)”" }
       }
-      let note = if $dry_run {
-        $"Would mark notification as read: “($thread.subject.title)”"
+      let merge = (gh api -X PUT -F merge_method=squash $"($pr.url)/merge" | complete)
+      # 405: e.g. base branch modified or mergeability not yet known
+      let merged = if $merge.exit_code == 0 { "Merged" } else if ($merge.stderr | str contains "(HTTP 405)") {
+        # REST has no auto-merge endpoint, gh uses GraphQL
+        let auto = (gh pr merge --auto --squash $pr.html_url | complete)
+        if $auto.exit_code == 0 { "Enabled auto-merge" } else { $"Failed enabling auto-merge: ($auto.stderr | str trim)" }
       } else {
-        try { gh api -X PATCH $thread.url | from json } catch { |e| $"Failed marking as read: ($e)" }
+        $"Failed merging: ($merge.stderr | str trim)"
       }
-      { pr: $desc, note: $note }
+      let read = try { gh api -X PATCH $thread.url | ignore; "marked as read" } catch { |e| $"failed marking as read: ($e.msg)" }
+      { pr: $desc, note: $"($merged), ($read)" }
     }
   } | flatten
 }
