@@ -5,7 +5,7 @@ export def main [
   #let pat: string = (keyring get github.com flying-sheep | str trim)
 
   # https://docs.github.com/en/rest/activity/notifications?apiVersion=2022-11-28#list-notifications-for-the-authenticated-user
-  gh api --paginate -X GET notifications -q '[.[] | select(.subject.type == "PullRequest" and (.subject.title | test("pre-commit autoupdate$|bump\\b.*\\bgroup\\b"; "i")))]' | from json --objects | each { |threads|
+  gh api --paginate -X GET notifications -q '[.[] | select(.subject.type == "PullRequest" and (.subject.title | test("pre-commit autoupdate$|\\bbump\\b.*\\b(group|from\\b.*\\bto)\\b"; "i")))]' | from json --objects | each { |threads|
     # TODO: handle milestones
 
     $threads | par-each --keep-order { |thread|
@@ -25,14 +25,10 @@ export def main [
         | where { |status| $status.state in ["error", "failure"] }
       )
       let failed = [...($failed_checks | get name) ...($failed_statuses | get context)]
-      mut skip_resp = { pr: $"Skipped ($desc)", note: $"Skipped notification “($thread.subject.title)”" }
-
       if $pr.changed_files != 1 or not ($pr.mergeable | default false) {
-        $skip_resp.pr = $"Skipped ($desc) because mergeable = ($pr.mergeable) and # changed files = ($pr.changed_files)"
-        return $skip_resp
+        return { pr: $desc, note: $"Skipped: mergeable = ($pr.mergeable), # changed files = ($pr.changed_files)" }
       } else if not ($failed | is-empty) {
-        $skip_resp.pr = $"Skipped ($desc) because of failing checks/statuses: ($failed)"
-        return $skip_resp
+        return { pr: $desc, note: $"Skipped: failing checks/statuses: ($failed)" }
       }
       # Do stuff (or not if -n is passed)
       if not $dry_run {
