@@ -85,6 +85,10 @@
         ProgramArguments = [ "/bin/launchctl" "setenv" "PATH" config.launchd.user.envVariables.PATH ];
         RunAtLoad = true;
       };
+      # Persistent launchd PATH for apps (stored in /var/db/com.apple.xpc.launchd/config/user.plist); overrides setenv for GUI apps, applies after reboot
+      system.activationScripts.postActivation.text = ''
+        launchctl config user path ${nixpkgs.lib.escapeShellArg config.launchd.user.envVariables.PATH}
+      '';
       launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.libpng.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];
       launchd.user.envVariables.LIBRARY_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib) [pkgs.iconv pkgs.libcxx];
       #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";
