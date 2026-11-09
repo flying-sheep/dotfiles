@@ -76,7 +76,10 @@
 
       system.primaryUser = "philipp.angerer";
 
-      #launchd.user.envVariables.PATH = ["/foo"];
+      # Ends up in /etc/zshenv as `export PATH=…` (unquoted, so $HOME expands). Same list as env.sh and nushell/env.nu
+      environment.systemPath = nixpkgs.lib.mkBefore (map (p: "$HOME/" + p) (nixpkgs.lib.splitString "\n" (nixpkgs.lib.trim (builtins.readFile ../path))));
+      # Same PATH for all GUI apps (and shells they start without zsh); launchd doesn't expand $HOME
+      launchd.user.envVariables.PATH = builtins.replaceStrings ["$HOME"] ["/Users/${config.system.primaryUser}"] config.environment.systemPath;
       launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.libpng.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];
       launchd.user.envVariables.LIBRARY_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib) [pkgs.iconv pkgs.libcxx];
       #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";

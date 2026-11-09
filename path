@@ -1,0 +1,3 @@
+bin
+.local/bin
+.cargo/bin

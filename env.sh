@@ -1,7 +1,8 @@
 # shellcheck shell=bash
 export DEFAULT_USER=$(whoami)
 
-export PATH="$HOME/bin:$HOME/.cargo/bin:$PATH:$HOME/.local/bin"
+# dirs relative to $HOME, shared with nix/flake.nix
+export PATH="$(sed "s|^|$HOME/|" "$HOME/.config/dotfiles/path" | paste -sd: -):$PATH"
 
 # Application choices
 if test -f /usr/bin/ksshaskpass; then

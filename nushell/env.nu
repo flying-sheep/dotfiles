@@ -73,15 +73,10 @@ let data_dir = $'($env.HOME)/(
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 $env.PATH = ($env.PATH | split row (char esep) | prepend [
-  $'($env.HOME)/.local/bin'
-  $'($env.HOME)/.cargo/bin',
   $'($env.HOME)/.yarn/bin',
   $'($env.HOME)/tex/texmf-osx-arm64/bin'
   $'($data_dir)/hatch/pythons/3.11/python/bin',
   $'($data_dir)/hatch/pythons/3.10/python/bin',
-  '/nix/var/nix/profiles/default/bin',
-  '/run/current-system/sw/bin',
-  '/usr/local/bin',
 ])
 
 if not (which fnm | is-empty) {
