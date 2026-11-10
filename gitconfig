@@ -4,7 +4,7 @@
 [user]
 	user = flying-sheep
 	name = Phil Schaf
-	email = flying-sheep@web.de
+	email = github@phil.red
 
 [interactive]
 	diffFilter = git delta --color-only
