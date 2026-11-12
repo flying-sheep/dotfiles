@@ -29,6 +29,7 @@
           pkgs.jaq
           pkgs.pest-ide-tools
           pkgs.hugo
+          pkgs.dart-sass
           pkgs.hdf5
           pkgs.R
           pkgs.git
