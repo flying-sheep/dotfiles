@@ -264,7 +264,7 @@ $env.config.menus = [
         selected_text: green_reverse
         description_text: yellow
     }
-    source: { |buffer, position|
+    source: { |buffer, place|
         $nu.scope.commands
         | where command =~ $buffer
         | each { |it| {value: $it.command description: $it.usage} }
@@ -283,7 +283,7 @@ $env.config.menus = [
         selected_text: green_reverse
         description_text: yellow
     }
-    source: { |buffer, position|
+    source: { |buffer, place|
         $nu.scope.vars
         | where name =~ $buffer
         | sort-by name
@@ -307,7 +307,7 @@ $env.config.menus = [
         selected_text: green_reverse
         description_text: yellow
     }
-    source: { |buffer, position|
+    source: { |buffer, place|
         $nu.scope.commands
         | where command =~ $buffer
         | each { |it| {value: $it.command description: $it.usage} }
