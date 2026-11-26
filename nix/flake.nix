@@ -30,7 +30,14 @@
           pkgs.pest-ide-tools
           pkgs.hugo
           pkgs.dart-sass
-          pkgs.hdf5
+          # https://github.com/NixOS/nixpkgs/issues/593553: hdf5’s bin output only has relative rpaths, but its dylibs live in $out
+          (pkgs.hdf5.overrideAttrs (old: {
+            postFixup = (old.postFixup or "") + ''
+              for f in $bin/bin/*; do
+                install_name_tool -add_rpath $out/lib "$f" 2>/dev/null && codesign -f -s - "$f" || true
+              done
+            '';
+          }))
           pkgs.R
           pkgs.git
           pkgs.git-lfs
