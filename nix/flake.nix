@@ -9,7 +9,11 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
   let
-    configuration = { pkgs, config, ... }: {
+    configuration = { pkgs, config, ... }: let
+      # nix-darwin only exports environment.variables (e.g. NIX_SSL_CERT_FILE) and PATH to zsh/bash; this is for GUI apps and nu.
+      # launchd doesn't expand $HOME
+      launchdEnv = builtins.mapAttrs (_: builtins.replaceStrings ["$HOME"] ["/Users/${config.system.primaryUser}"]) (config.environment.variables // { PATH = config.environment.systemPath; });
+    in {
       nixpkgs.config.allowUnfree = true;  # 1password
 
       # List packages installed in system profile. To search by name, run:
@@ -86,19 +90,17 @@
 
       # Ends up in /etc/zshenv as `export PATH=…` (unquoted, so $HOME expands). Same list as env.sh and nushell/env.nu
       environment.systemPath = nixpkgs.lib.mkBefore (map (p: "$HOME/" + p) (nixpkgs.lib.splitString "\n" (nixpkgs.lib.trim (builtins.readFile ../path))));
-      # Same PATH for all GUI apps (and shells they start without zsh); launchd doesn't expand $HOME
-      launchd.user.envVariables.PATH = builtins.replaceStrings ["$HOME"] ["/Users/${config.system.primaryUser}"] config.environment.systemPath;
-      # envVariables is only applied by darwin-rebuild, not after a reboot, so also set it at login
-      launchd.user.agents.path.serviceConfig = {
-        ProgramArguments = [ "/bin/launchctl" "setenv" "PATH" config.launchd.user.envVariables.PATH ];
+      # launchctl setenv doesn’t survive a reboot, so set it at login. Also runs on darwin-rebuild: nix-darwin reloads agents whose plist changed
+      launchd.user.agents.env.serviceConfig = {
+        ProgramArguments = [ "/bin/sh" "-c" (nixpkgs.lib.concatStringsSep "\n" (nixpkgs.lib.mapAttrsToList (k: v: "/bin/launchctl setenv ${k} ${nixpkgs.lib.escapeShellArg v}") launchdEnv)) ];
         RunAtLoad = true;
       };
       # Persistent launchd PATH for apps (stored in /var/db/com.apple.xpc.launchd/config/user.plist); overrides setenv for GUI apps, applies after reboot
       system.activationScripts.postActivation.text = ''
-        launchctl config user path ${nixpkgs.lib.escapeShellArg config.launchd.user.envVariables.PATH}
+        launchctl config user path ${nixpkgs.lib.escapeShellArg launchdEnv.PATH}
       '';
-      launchd.user.envVariables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.libpng.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];
-      launchd.user.envVariables.LIBRARY_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib) [pkgs.iconv pkgs.libcxx];
+      environment.variables.PKG_CONFIG_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib/pkgconfig) [pkgs.openssl.dev pkgs.libpng.dev pkgs.zlib.dev pkgs.openblas.dev pkgs.libusb1.dev pkgs.python3];
+      environment.variables.LIBRARY_PATH = nixpkgs.lib.strings.concatMapStringsSep ":" (pkg: pkg + /lib) [pkgs.iconv pkgs.libcxx];
       #"${pkgs.openssl.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig";
 
       nix.enable = true;
